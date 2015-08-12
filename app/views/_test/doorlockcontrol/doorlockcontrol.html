@@ -1,0 +1,31 @@
+<!-- Door lock control element -->
+<div class="widget-block">
+    <div class="widget-block-in clearfix app-border app-gradient app-shadow">
+        <img class="widget-image" src="storage/img/icons/lock-closed.png" alt="img">
+        <!-- Widget header -->
+        <div class="widget-header">
+            <a class="widget-config" href=""><i class="fa fa-cog fa-lg"></i></a>
+        </div>
+
+        <!-- Widget body -->
+        <div class="widget-body">
+            <h3 class="entry-title">Door Lock Element</h3>
+            <div class="widget-control-wrap">
+                <div> 
+                    <div class="widget-control control-left widget-click-popup" ng-click="loadDoorLock('#modal_doorlock', v.id, v)">
+                        <span class="widget-level">Closed at</span> <span>09:03</span> <i class="fa fa-caret-down"></i>
+                    </div>
+                    <div class="widget-control control-right">
+                        <div class="btn-group">
+                            <button class="btn widget-btn-off btn-sm btn-primary"><i class="fa fa-lock"></i>
+                            </button>
+                            <button class="btn widget-btn-on btn-sm btn-default"><i class="fa fa-unlock"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div><!-- /.widget-control-wrap --> 
+        </div><!-- /.panel-body -->
+    </div>
+</div>

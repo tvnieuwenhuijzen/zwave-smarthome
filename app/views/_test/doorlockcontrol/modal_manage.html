@@ -1,0 +1,40 @@
+<div class="modal-dialog modal-dialog-center">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title" ng-bind="input.title"></h4>
+        </div>
+        <div class="modal-body">
+            <div class="alert alert-warning" ng-if="!doorLockManage.data">
+                <i class="fa {{doorLockManage.icon}}"></i> <span ng-bind="doorLockManage.message"></span>
+            </div>
+            <div class="multiline-entry" ng-if="doorLockManage.data">
+                <table class="table table-report table-condensed">
+                    <tr>
+                        <th>User name</th>
+                        <th>User code</th>
+                        <th>Active</th>
+                    </tr>
+                    <tbody>
+                        <tr class="bcg-success {{n.success}}" ng-repeat="n in doorLockManage.data">
+                            <td>
+                                <input class="form-control" name="set_name_{{$index}}" id="set_name_{{$index}}" type="text" value="{{n.setName}}" />
+                            </td>
+                            <td>
+                                <input class="form-control" name="set_code_{{$index}}" id="set_code_{{$index}}" type="text" value="{{n.setCode}}" />
+                            </td>
+                            <td>
+                                <input type="checkbox" name="set_active_{{$index}}" id="set_active_{{$index}}" value="{{n.setActive}}" ng-checked="n.setActive" />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <!-- Submit -->
+                <div class="submit-entry">
+                    <button type="submit" class="btn btn-primary" ng-bind="_t('lb_save')"></button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal" ng-bind="_t('lb_cancel')"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

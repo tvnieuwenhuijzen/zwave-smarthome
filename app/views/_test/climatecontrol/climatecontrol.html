@@ -1,0 +1,35 @@
+<!-- Climate control element -->
+<div class="widget-block">
+    <div class="widget-block-in clearfix app-border app-gradient app-shadow">
+        <img id="widget_img_Multiline_13" class="widget-image" src="storage/img/icons/temperature.png" alt="img">
+        <!-- Widget header -->
+        <div class="widget-header">
+            <a class="widget-config" href=""><i class="fa fa-cog fa-lg"></i></a>
+        </div>
+
+        <!-- Widget body -->
+        <div class="widget-body">
+            <h3 class="entry-title">Climate Control Element</h3>
+            <div class="widget-control-wrap">
+                <div> 
+                    <div class="widget-control control-left widget-click-popup" ng-click="loadClimateControl('#modal_climate_control')">
+                        <span class="widget-level">Click here</span> <i class="fa fa-caret-down"></i>
+                    </div>
+                    <div class="widget-control control-right">
+                        <select class="form-control" 
+                                name="changeElementMode_1" 
+                                id="changeElementMode_1">
+                            <option value="{{m}}" ng-repeat="m in climateElementModes" ng-bind="_t(m)"></option>
+                        </select>
+                        <!--<div class="btn-group">
+                            <button class="btn widget-btn-off btn-sm btn-default">Off</button>
+                            <button class="btn widget-btn-on btn-sm btn-default">E-Save</button>
+                             <button class="btn widget-btn-off btn-sm btn-primary">Room</button>
+                        </div>--> 
+                    </div>
+                </div>
+
+            </div><!-- /.widget-control-wrap --> 
+        </div><!-- /.panel-body -->
+    </div>
+</div>
