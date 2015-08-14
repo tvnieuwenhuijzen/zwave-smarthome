@@ -1,0 +1,45 @@
+<div class="modal-dialog modal-dialog-center">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title" ng-bind_="input.title">Leakage protection element</h4>
+        </div>
+        <div class="modal-body ">
+            <div class="alert alert-warning" ng-if="climateControl.message">
+                <i class="fa {{climateControl.icon}}"></i> <span ng-bind="climateControl.message"></span>
+            </div>
+            <div class="multiline-entry" ng-if="climateControl.data">
+                <table class="table table-report table-condensed">
+                    <tbody>
+                        <tr class="bcg-success" ng-repeat="n in climateControl.data.metrics.rooms">
+                            <td class="td-img">
+                                <img class="report-img" ng-src="storage/img/rooms/{{n.default_img}}" alt="img" />
+                            </td>
+                            <td ng-bind="n.title"></td>
+                            <td class="text-success">
+                                Act. <span ng-bind="n.level"></span> <span ng-bind="n.scaleTitle"></span>
+                            </td>
+                            <td class="text-primary">
+                                Set <span ng-bind="n.modeLevel"></span> <span ng-bind="n.scaleTitle"></span>
+                            </td>
+                            <td class="text-right">
+                                <i class="fa fa-spinner fa-spin" ng-if="changeClimateControlProcess[n.id]"></i>&nbsp;
+                            </td>
+                            <td class="text-right">
+
+                                <select class="form-control" 
+                                        name="changeMode_{{n.id}}" 
+                                        id="changeMode_{{n.id}}"
+                                        ng-model="climateControlMode[n.id]" 
+                                        ng-disabled="changeClimateControlProcess[n.id]"
+                                        ng-change="changeClimateControlMode(n.id)">
+                                    <option value="{{m}}" ng-repeat="m in climateControlModes" ng-selected="n.mode == m" ng-bind="_t(m)"></option>
+                                </select>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

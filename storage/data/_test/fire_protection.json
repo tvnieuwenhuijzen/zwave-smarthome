@@ -1,0 +1,42 @@
+{
+    "data": {
+        "creatorId": 13,
+        "deviceType": "sensorMultiline",
+        "h": 1087972116,
+        "hasHistory": false,
+        "id": "FireProtection_1",
+        "location": 1,
+        "metrics": {
+            "title": "Fire Protection 1",
+            "devices": [{
+                    "id": 1,
+                    "title": "Alarm 1",
+                    "icon": "placeholder",
+                    "level": "off",
+                    "updateTime": 1438847769
+                }, {
+                    "id": 2,
+                    "title": "Alarm 2",
+                    "icon": "placeholder",
+                    "level": "on",
+                    "updateTime": 1438847769
+                }, {
+                    "id": 3,
+                    "title": "Alarm 2",
+                    "icon": "placeholder",
+                    "level": "on",
+                    "updateTime": 1438847769
+                }],
+            "icon": "meter",
+            "level": "",
+            "scaleTitle": "kWh"
+        },
+        "permanently_hidden": false,
+        "tags": ["Livingroom"],
+        "visibility": true,
+        "updateTime": 1438847769
+    },
+    "code": 200,
+    "message": "200 OK",
+    "error": null
+}

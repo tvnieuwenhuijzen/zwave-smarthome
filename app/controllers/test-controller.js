@@ -96,6 +96,48 @@ myAppController.controller('TestController', function($scope, $routeParams, $fil
             }, 3000);
 
     };
+    
+    /**
+     * Show security app modal window
+     */
+   
+    $scope.loadSecurityApp = function(target, id, input) {
+        $(target).modal();
+       
+    };
+    
+    /**
+     * Show fire protection modal window
+     */
+     $scope.fireProtection = {
+        data: false,
+        icon: 'fa-spinner fa-spin', 
+        message: false
+    };
+    $scope.loadFireProtection = function(target, id, input) {
+        $(target).modal();
+         $scope.fireProtection.message = $scope._t('loading');
+        //dataFactory.getApi('devices', '/' + id, true).then(function(response) {
+         dataFactory.getApiLocal('_test/fire_protection.json').then(function(response) {
+            if (response.data.data.metrics.devices) {
+                $scope.fireProtection.data = response.data.data;
+                $scope.fireProtection.message = false;
+            } else {
+                 $scope.fireProtection.message = $scope._t('no_data');
+                 $scope.fireProtection.icon = 'fa-info-circle text-warning';
+            }
+        }, function(error) {
+            $scope.fireProtection.message = $scope._t('error_load_data');
+            $scope.fireProtection.icon = 'fa-exclamation-triangle text-danger';
+        });
+    };
+    
+    /**
+     * Show leakage protection modal window
+     */
+    $scope.loadLeakageProtection = function(target, id, input) {
+        $(target).modal();
+    };
 
      $scope.images = [1, 2, 3, 4, 5, 6, 7, 8];
 

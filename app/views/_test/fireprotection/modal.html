@@ -1,0 +1,31 @@
+<div class="modal-dialog modal-dialog-center">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title" ng-bind_="input.title">Fire protection element</h4>
+        </div>
+        <div class="modal-body ">
+            <div class="alert alert-warning" ng-if="fireProtection.message">
+                <i class="fa {{fireProtection.icon}}"></i> <span ng-bind="fireProtection.message"></span>
+            </div>
+            <div class="multiline-entry" ng-if="fireProtection.data">
+                <table class="table table-report table-condensed">
+                    <tbody>
+                        <tr class="bcg-success" ng-repeat="n in fireProtection.data.metrics.devices">
+                            <td class="td-img">
+                                <img class="report-img" ng-src="storage/img/icons/{{n.icon}}.png" alt="img" />
+                            </td>
+                            <td ng-bind="n.title"></td>
+                            <td>
+                               <i class="fa fa-clock-o"></i> <span ng-bind="n.updateTime|isToday:true:_t('lb_days'):_t('lb_yesterday')"></span>
+                            </td>
+                            <td class="text-right">
+                                <strong ng-bind="n.level"></strong>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
