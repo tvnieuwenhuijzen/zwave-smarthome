@@ -60,6 +60,48 @@ myApp.directive('bbAlert', function() {
 });
 
 /**
+ * Help directive
+ */
+myApp.directive('bbHelp', function(dataFactory,cfg) {
+    return {
+        restrict: "E",
+        replace: true,
+        scope: {
+            lang: '&',
+            file: '='
+        },
+        template: '<span><a href="" ng-click="clickMe(file)"><i class="fa fa-question-circle fa-lg text-info"></i> Lang: {{lang}}</a>'
+                + '<div class="modal modal-vertical-centered modal-no-padding fade" id="help_{{file}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">'
+                + '<div class="modal-dialog modal-dialog-center"><div class="modal-content">'
+                + '<div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button></div>'
+                + ' <div class="modal-body"><div class="modal-body-in" ng-bind-html="helpData|toTrusted"></div></div>'
+                + '</div></div>'
+                + '</div>'
+                + '</span>',
+        link: function(scope, elem, attrs) {
+            scope.helpData = null;
+            scope.clickMe = function(file) {
+                var lang = 'en';
+                var helpFile = file + '.' + lang + '.html';
+                $('#help_' + file).modal();
+                // Load help file for given language
+                dataFactory.getHelp(helpFile).then(function(response) {
+                    scope.helpData = response.data;
+                }, function(error) {
+                    // Load help file for default language
+                    helpFile = file + '.' + cfg.lang + '.html';
+                    dataFactory.getHelp(helpFile).then(function(response) {
+                        scope.helpData = response.data;
+                    }, function(error) {
+                        //helpFile = file + '.' + cfg.lang + '.html';
+                    });
+                });
+            };
+        }
+    };
+});
+
+/**
  * Help text directive
  */
 myApp.directive('bbHelpText', function() {
@@ -71,9 +113,14 @@ myApp.directive('bbHelpText', function() {
             display: '=',
             icon: '='
         },
-        template: '<span class="help-text" ng-class="display"><i class="fa text-info" ng-class="icon ? icon : \' fa-info-circle\'"></i> {{trans}}</span>'
+        template: '<span class="help-text" ng-class="display"><i class="fa text-info" ng-class="icon ? icon : \' fa-info-circle\'"></i> {{trans}}</span>',
+        link: function(scope, element, attrs) {
+
+        }
     };
 });
+
+
 
 /**
  * Show validation error
@@ -252,60 +299,60 @@ myApp.directive('fileModel', ['$parse', function($parse) {
     }]);
 
 myApp.directive('infiniteScroll', [
-  '$rootScope', '$window', '$timeout', function($rootScope, $window, $timeout) {
-    return {
-      link: function(scope, elem, attrs) {
-        var checkWhenEnabled, handler, scrollDistance, scrollEnabled;
-        $window = angular.element($window);
-        scrollDistance = 0;
-        if (attrs.infiniteScrollDistance != null) {
-          scope.$watch(attrs.infiniteScrollDistance, function(value) {
-            return scrollDistance = parseInt(value, 10);
-          });
-        }
-        scrollEnabled = true;
-        checkWhenEnabled = false;
-        if (attrs.infiniteScrollDisabled != null) {
-          scope.$watch(attrs.infiniteScrollDisabled, function(value) {
-            scrollEnabled = !value;
-            if (scrollEnabled && checkWhenEnabled) {
-              checkWhenEnabled = false;
-              return handler();
+    '$rootScope', '$window', '$timeout', function($rootScope, $window, $timeout) {
+        return {
+            link: function(scope, elem, attrs) {
+                var checkWhenEnabled, handler, scrollDistance, scrollEnabled;
+                $window = angular.element($window);
+                scrollDistance = 0;
+                if (attrs.infiniteScrollDistance != null) {
+                    scope.$watch(attrs.infiniteScrollDistance, function(value) {
+                        return scrollDistance = parseInt(value, 10);
+                    });
+                }
+                scrollEnabled = true;
+                checkWhenEnabled = false;
+                if (attrs.infiniteScrollDisabled != null) {
+                    scope.$watch(attrs.infiniteScrollDisabled, function(value) {
+                        scrollEnabled = !value;
+                        if (scrollEnabled && checkWhenEnabled) {
+                            checkWhenEnabled = false;
+                            return handler();
+                        }
+                    });
+                }
+                handler = function() {
+                    var elementBottom, remaining, shouldScroll, windowBottom;
+                    windowBottom = $window.height() + $window.scrollTop();
+                    elementBottom = elem.offset().top + elem.height();
+                    remaining = elementBottom - windowBottom;
+                    shouldScroll = remaining <= $window.height() * scrollDistance;
+                    if (shouldScroll && scrollEnabled) {
+                        if ($rootScope.$$phase) {
+                            return scope.$eval(attrs.infiniteScroll);
+                        } else {
+                            return scope.$apply(attrs.infiniteScroll);
+                        }
+                    } else if (shouldScroll) {
+                        return checkWhenEnabled = true;
+                    }
+                };
+                $window.on('scroll', handler);
+                scope.$on('$destroy', function() {
+                    return $window.off('scroll', handler);
+                });
+                return $timeout((function() {
+                    if (attrs.infiniteScrollImmediateCheck) {
+                        if (scope.$eval(attrs.infiniteScrollImmediateCheck)) {
+                            return handler();
+                        }
+                    } else {
+                        return handler();
+                    }
+                }), 0);
             }
-          });
-        }
-        handler = function() {
-          var elementBottom, remaining, shouldScroll, windowBottom;
-          windowBottom = $window.height() + $window.scrollTop();
-          elementBottom = elem.offset().top + elem.height();
-          remaining = elementBottom - windowBottom;
-          shouldScroll = remaining <= $window.height() * scrollDistance;
-          if (shouldScroll && scrollEnabled) {
-            if ($rootScope.$$phase) {
-              return scope.$eval(attrs.infiniteScroll);
-            } else {
-              return scope.$apply(attrs.infiniteScroll);
-            }
-          } else if (shouldScroll) {
-            return checkWhenEnabled = true;
-          }
         };
-        $window.on('scroll', handler);
-        scope.$on('$destroy', function() {
-          return $window.off('scroll', handler);
-        });
-        return $timeout((function() {
-          if (attrs.infiniteScrollImmediateCheck) {
-            if (scope.$eval(attrs.infiniteScrollImmediateCheck)) {
-              return handler();
-            }
-          } else {
-            return handler();
-          }
-        }), 0);
-      }
-    };
-  }
+    }
 ]);
 /**
  * Key event directive

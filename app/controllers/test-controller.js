@@ -11,8 +11,8 @@ myAppController.controller('TestController', function($scope, $routeParams, $fil
             dataService.showConnectionError(error);
         });
     };
-    
-    
+
+
     /**
      * Show door lock modal window
      */
@@ -23,7 +23,7 @@ myAppController.controller('TestController', function($scope, $routeParams, $fil
         };
         $scope.doorLock = {data: false, icon: 'fa-spinner fa-spin', message: $scope._t('loading')};
         //dataFactory.getApi('devices', '/' + id, true).then(function(response) {
-         dataFactory.getApiLocal('_test/door_lock.json').then(function(response) {
+        dataFactory.getApiLocal('_test/door_lock.json').then(function(response) {
             if (response.data.data.metrics.events) {
                 $scope.doorLock = {data: response.data.data};
             } else {
@@ -34,16 +34,16 @@ myAppController.controller('TestController', function($scope, $routeParams, $fil
         });
 
     };
-    
-     /**
+
+    /**
      * Show door lock manage modal window
      */
     $scope.loadDoorLockManage = function(target, id, input) {
         $(target).modal();
-         $scope.doorLockManage = {data: false, icon: 'fa-spinner fa-spin', message: $scope._t('loading')};
-        
-         dataFactory.getApi('instances', '/DoorLockUser', true).then(function(response) {
-             console.log(response)
+        $scope.doorLockManage = {data: false, icon: 'fa-spinner fa-spin', message: $scope._t('loading')};
+
+        dataFactory.getApi('instances', '/DoorLockUser', true).then(function(response) {
+            console.log(response)
             if (response.data.data[0]) {
                 $scope.doorLockManage = {data: response.data.data[0].params.keys};
             } else {
@@ -52,12 +52,12 @@ myAppController.controller('TestController', function($scope, $routeParams, $fil
         }, function(error) {
             $scope.doorLockManage = {data: false, icon: 'fa-exclamation-triangle text-danger', message: $scope._t('error_load_data')};
         });
-        
+
 
     };
-    $scope.climateElementModes = ['off','esave','per_room'];
-    
-     /**
+    $scope.climateElementModes = ['off', 'esave', 'per_room'];
+
+    /**
      * Show climate modal window
      */
     $scope.loadClimateControl = function(target, id, input) {
@@ -66,12 +66,12 @@ myAppController.controller('TestController', function($scope, $routeParams, $fil
             title: 'Climate Control 1'
         };
         $scope.climateControl = {data: false, icon: 'fa-spinner fa-spin', message: $scope._t('loading')};
-        $scope.climateControlModes = ['off','esave','comfort','time_driven'];
+        $scope.climateControlModes = ['off', 'esave', 'comfort', 'time_driven'];
         $scope.climateControlMode = {};
         $scope.changeClimateControlProcess = {};
         //dataFactory.getApi('devices', '/' + id, true).then(function(response) {
-         dataFactory.getApiLocal('_test/climate_control.json').then(function(response) {
-            
+        dataFactory.getApiLocal('_test/climate_control.json').then(function(response) {
+
             if (response.data.data.metrics.rooms) {
                 $scope.climateControl = {data: response.data.data};
             } else {
@@ -82,56 +82,56 @@ myAppController.controller('TestController', function($scope, $routeParams, $fil
         });
 
     };
-    
-     /**
+
+    /**
      * Change climate control mode
      */
     $scope.changeClimateControlMode = function(id) {
         //console.log($scope.climateControl.data.metrics.rooms);
         $scope.changeClimateControlProcess[id] = true;
-        var room = _.findWhere($scope.climateControl.data.metrics.rooms,{id: id})
-        console.log(room.title + ' changing mode to: ',$scope.climateControlMode[id])
-         $timeout(function() {
-                 $scope.changeClimateControlProcess[id] = false;
-            }, 3000);
+        var room = _.findWhere($scope.climateControl.data.metrics.rooms, {id: id})
+        console.log(room.title + ' changing mode to: ', $scope.climateControlMode[id])
+        $timeout(function() {
+            $scope.changeClimateControlProcess[id] = false;
+        }, 3000);
 
     };
-    
+
     /**
      * Show security app modal window
      */
-   
+
     $scope.loadSecurityApp = function(target, id, input) {
         $(target).modal();
-       
+
     };
-    
+
     /**
      * Show fire protection modal window
      */
-     $scope.fireProtection = {
+    $scope.fireProtection = {
         data: false,
-        icon: 'fa-spinner fa-spin', 
+        icon: 'fa-spinner fa-spin',
         message: false
     };
     $scope.loadFireProtection = function(target, id, input) {
         $(target).modal();
-         $scope.fireProtection.message = $scope._t('loading');
+        $scope.fireProtection.message = $scope._t('loading');
         //dataFactory.getApi('devices', '/' + id, true).then(function(response) {
-         dataFactory.getApiLocal('_test/fire_protection.json').then(function(response) {
+        dataFactory.getApiLocal('_test/fire_protection.json').then(function(response) {
             if (response.data.data.metrics.devices) {
                 $scope.fireProtection.data = response.data.data;
                 $scope.fireProtection.message = false;
             } else {
-                 $scope.fireProtection.message = $scope._t('no_data');
-                 $scope.fireProtection.icon = 'fa-info-circle text-warning';
+                $scope.fireProtection.message = $scope._t('no_data');
+                $scope.fireProtection.icon = 'fa-info-circle text-warning';
             }
         }, function(error) {
             $scope.fireProtection.message = $scope._t('error_load_data');
             $scope.fireProtection.icon = 'fa-exclamation-triangle text-danger';
         });
     };
-    
+
     /**
      * Show leakage protection modal window
      */
@@ -139,52 +139,82 @@ myAppController.controller('TestController', function($scope, $routeParams, $fil
         $(target).modal();
     };
 
-     $scope.images = [1, 2, 3, 4, 5, 6, 7, 8];
+    $scope.images = [1, 2, 3, 4, 5, 6, 7, 8];
 
-  $scope.loadMore = function() {
-    var last = $scope.images[$scope.images.length - 1];
-    console.log(last)
-    for(var i = 1; i <= 8; i++) {
-      $scope.images.push(last + i);
-    }
-  };
-  
-  /**
+    $scope.loadMore = function() {
+        var last = $scope.images[$scope.images.length - 1];
+        console.log(last)
+        for (var i = 1; i <= 8; i++) {
+            $scope.images.push(last + i);
+        }
+    };
+
+    /**
      * Load data into collection
      */
     $scope.devicesMaster = [];
     $scope.devices = [];
-     $scope.cnt = 0;
+    $scope.cnt = 0;
     $scope.end = 16;
-     $scope.scroll = {
-         start: 0,
-         end: 20,
-         cnt: 0,
-         itemCnt: 0
-     };
+    $scope.scroll = {
+        start: 0,
+        end: 20,
+        cnt: 0,
+        itemCnt: 0
+    };
     $scope.loadDevices = function() {
         dataFactory.getApi('devices').then(function(response) {
-             $scope.scroll.cnt += 1;
-             $scope.scroll.itemCnt = _.size(response.data.data.devices);
-             var test = _.has(response.data.data.devices[0], 'id');
-             console.log(test)
+            $scope.scroll.cnt += 1;
+            $scope.scroll.itemCnt = _.size(response.data.data.devices);
+            var test = _.has(response.data.data.devices[0], 'id');
+            console.log(test)
             $scope.devicesMaster = response.data.data.devices;
-           if($scope.scroll.cnt > 2){
+            if ($scope.scroll.cnt > 2) {
                 //$scope.end += 1;
-                  $scope.scroll.end =  ( $scope.scroll.end >=  $scope.scroll.itemCnt ?  $scope.scroll.itemCnt : $scope.scroll.end += 1);
+                $scope.scroll.end = ($scope.scroll.end >= $scope.scroll.itemCnt ? $scope.scroll.itemCnt : $scope.scroll.end += 1);
             }
-            $scope.devices = $scope.devicesMaster.slice($scope.scroll.start,$scope.scroll.end);
+            $scope.devices = $scope.devicesMaster.slice($scope.scroll.start, $scope.scroll.end);
             console.log($scope.scroll.cnt)
             console.log($scope.scroll.end)
-        }, function(error) {});
+        }, function(error) {
+        });
     };
     //$scope.loadDevices();
-    
-     $scope.loadMoreData = function() {
+
+    $scope.loadMoreData = function() {
         //console.log($scope.devices)
     };
     $scope.loadMoreData();
-  
+
+});
+
+/**
+ * Help controller
+ */
+myAppController.controller('HelpController', function($scope, $routeParams, dataFactory, dataService) {
+    $scope.helpData = false;
+    /**
+     * Load help data
+     */
+    $scope.loadHelp = function(file, id, input) {
+        //$(target).modal();
+        var helpFile = file + '.' + $scope.lang + '.html';
+        // Load help file for given language
+        dataFactory.getHelp(helpFile).then(function(response) {
+            console.log(response.data)
+            $scope.helpData = response.data;
+        }, function(error) {
+            // Load help file for default language
+            helpFile = file + '.' + $scope.cfg.lang + '.html';
+            dataFactory.getHelp(helpFile).then(function(response) {
+               $scope.helpData = response.data;
+            }, function(error) {
+                helpFile = file + '.' + $scope.cfg.lang + '.html';
+            });
+        });
+
+    };
+    //$scope.loadHelp();
 });
 
 

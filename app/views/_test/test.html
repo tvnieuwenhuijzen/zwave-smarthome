@@ -75,7 +75,15 @@
          aria-hidden="true"
          ng-include="'app/views/_test/leakageprotection/modal.html'"></div><!-- /.Modal climate -->
          
+          <!--------------------------------- Help test --------------------------------->
+         <div>
+             <bb-help file="'interview'"></bb-help>
+         </div>
          
+         <div ng-controller="HelpController">
+             <!--<a href="" ng-click="loadHelp('interview')">Help</a>--> 
+             <div ng-if="helpData" ng-bind-html="helpData|toTrusted"></div>
+         </div>
     <!--<div infinite-scroll='loadDevices()' infinite-scroll-distance='2'>
     <img ng-repeat='v in devices' ng-src='http://placehold.it/225x250&text={{$index}}'>
   </div>
