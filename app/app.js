@@ -260,7 +260,7 @@ myApp.run(function($rootScope, $location, dataService) {
 
 // Intercepting HTTP calls with AngularJS.
 myApp.config(function($provide, $httpProvider) {
-    $httpProvider.defaults.timeout = 5000;
+    $httpProvider.defaults.timeout = 5000; 
     // Intercept http calls.
     $provide.factory('MyHttpInterceptor', function($q,$location,dataService) {
          var path = $location.path().split('/');
@@ -284,8 +284,6 @@ myApp.config(function($provide, $httpProvider) {
             responseError: function(rejection) {
                 dataService.logError(rejection);
                if(rejection.status == 401){
-                  
-                   //$cookies.user = undefined;
                    if(path[1] !== ''){
                         dataService.logOut();
                    }
