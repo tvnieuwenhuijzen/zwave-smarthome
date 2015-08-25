@@ -290,6 +290,13 @@ myAppController.controller('AppController', function($scope, $window, $cookies, 
 /**
  * App local controller
  */
+myAppController.controller('AppParentController', function($scope, $window, $cookies, $timeout, $route, dataFactory, dataService, myCache, _) {
+    $scope.fromParent = 'fromParent';
+
+});
+/**
+ * App local controller
+ */
 myAppController.controller('AppLocalController', function($scope, $window, $cookies, $timeout, $route, dataFactory, dataService, myCache, _) {
     $scope.activeTab = 'local';
 
@@ -348,7 +355,7 @@ myAppController.controller('AppLocalDetailController', function($scope, $routePa
  * App online controller
  */
 myAppController.controller('AppOnlineController', function($scope, $window, $cookies, $timeout, $route, dataFactory, dataService, myCache, _) {
-   
+   $scope.activeTab = 'online';
 
 });
 /**
@@ -406,7 +413,7 @@ myAppController.controller('AppOnlineDetailController', function($scope, $routeP
  * App instance controller
  */
 myAppController.controller('AppActiveController', function($scope, $window, $cookies, $timeout, $route, dataFactory, dataService, myCache, _) {
-   
+   $scope.activeTab = 'active';
 
 });
 /**
