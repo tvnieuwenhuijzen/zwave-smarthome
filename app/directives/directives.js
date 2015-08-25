@@ -54,6 +54,7 @@ myApp.directive('bbAlert', function() {
         replace: true,
         scope: {alert: '='},
         template: '<div class="alert" ng-if="alert.message" ng-class="alert.status">'
+                + ' <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'
                 + '<i class="fa fa-lg" ng-class="alert.icon"></i> <span ng-bind-html="alert.message|toTrusted"></span>'
                 + '</div>'
     };
@@ -66,30 +67,32 @@ myApp.directive('bbHelp', function(dataFactory,cfg) {
     return {
         restrict: "E",
         replace: true,
-        scope: {
-            lang: '&',
-            file: '='
-        },
-        template: '<span><a href="" ng-click="clickMe(file)"><i class="fa fa-question-circle fa-lg text-info"></i> Lang: {{lang}}</a>'
-                + '<div class="modal modal-vertical-centered modal-no-padding fade" id="help_{{file}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">'
+//        scope: {
+//            lang: '&',
+//            file: '='
+//        },
+        template: '<span><a href="" ng-click="clickMe(file)"><i class="fa fa-question-circle fa-lg text-info"></i></a>'
+                + '<div class="modal modal-vertical-centered fade" id="help_{{file}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">'
                 + '<div class="modal-dialog modal-dialog-center"><div class="modal-content">'
                 + '<div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button></div>'
-                + ' <div class="modal-body"><div class="modal-body-in" ng-bind-html="helpData|toTrusted"></div></div>'
+                + ' <div class="modal-body" ng-bind-html="helpData|toTrusted"></div>'
                 + '</div></div>'
                 + '</div>'
                 + '</span>',
         link: function(scope, elem, attrs) {
+            scope.file = attrs.file;
             scope.helpData = null;
             scope.clickMe = function(file) {
-                var lang = 'en';
-                var helpFile = file + '.' + lang + '.html';
-                $('#help_' + file).modal();
+                var defaultLang = 'en';
+                var lang = attrs.lang;
+                var helpFile = scope.file + '.' + lang + '.html';
+                $('#help_' + scope.file).modal();
                 // Load help file for given language
                 dataFactory.getHelp(helpFile).then(function(response) {
                     scope.helpData = response.data;
                 }, function(error) {
                     // Load help file for default language
-                    helpFile = file + '.' + cfg.lang + '.html';
+                    helpFile = scope.file + '.' + defaultLang + '.html';
                     dataFactory.getHelp(helpFile).then(function(response) {
                         scope.helpData = response.data;
                     }, function(error) {

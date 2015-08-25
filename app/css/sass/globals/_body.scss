@@ -98,7 +98,7 @@ a:hover {
 }
 .help-text{
     display: block;
-    font-size: 95%;
+    //font-size: 95%;
     font-style: italic;
      margin: 5px 0;
 }
@@ -250,6 +250,9 @@ background-color: lighten($app-body-bcg-color, 10%);;
 .tab-content{
     padding-top: 10px;
 }
+.tab-content-form{
+    padding: 0;
+}
 /* Forms
 -------------------------------------------------- */
 
@@ -257,8 +260,8 @@ background-color: lighten($app-body-bcg-color, 10%);;
     margin-bottom: 20px;
     background-color: #fff;
     border: solid 4px darken($app-body-bcg-color,3%);
-    fieldset{
-        background-color: #fff;
+    fieldset,.fieldset{
+        background-color: #fff; 
     }
     h3{
         font-size: 14px;
@@ -273,7 +276,7 @@ background-color: lighten($app-body-bcg-color, 10%);;
     }
 }
 
-fieldset{
+fieldset, .fieldset{
     //margin-bottom: 10px;
     background-color: $app-body-bcg-color;
     padding: 10px;
