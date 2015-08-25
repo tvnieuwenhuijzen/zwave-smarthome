@@ -1,9 +1,11 @@
 <!-- Active view -->
-<div ng-controller="AppActiveController">
-    <!-- Navigation --> 
-    <div ng-include="'app/views/apps/nav.html'"></div>
-    <!-- Tab panes -->
-    <div class="tab-content">
-        Apps Active
-    </div>
+<div ng-controller="AppParentController">
+    <div ng-controller="AppActiveController">
+        <!-- Navigation --> 
+        <div ng-include="'app/views/apps/nav.html'"></div>
+        <!-- Tab panes -->
+        <div class="tab-content">
+            {{modules}}
+        </div>
+    </div> <!-- /ng-controller --> 
 </div> <!-- /ng-controller --> 

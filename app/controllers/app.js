@@ -291,7 +291,22 @@ myAppController.controller('AppController', function($scope, $window, $cookies, 
  * App local controller
  */
 myAppController.controller('AppParentController', function($scope, $window, $cookies, $timeout, $route, dataFactory, dataService, myCache, _) {
-    $scope.fromParent = 'fromParent';
+    $scope.modules = [];
+    /**
+     * Load local modules
+     */
+    $scope.loadModules = function(query) {
+        dataFactory.getApi('modules').then(function(response) {
+            
+            $scope.modules = response.data.data;
+            $scope.loading = false;
+            dataService.updateTimeTick();
+        }, function(error) {
+            $scope.loading = false;
+            dataService.showConnectionError(error);
+        });
+    };
+    //$scope.loadModules();
 
 });
 /**
@@ -299,6 +314,7 @@ myAppController.controller('AppParentController', function($scope, $window, $coo
  */
 myAppController.controller('AppLocalController', function($scope, $window, $cookies, $timeout, $route, dataFactory, dataService, myCache, _) {
     $scope.activeTab = 'local';
+    $scope.loadModules();
 
 });
 /**

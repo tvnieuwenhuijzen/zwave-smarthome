@@ -1,9 +1,11 @@
 <!-- Online app view -->
+<div ng-controller="AppParentController">
 <div ng-controller="AppLocalController">
     <!-- Navigation --> 
     <div ng-include="'app/views/apps/nav.html'"></div>
     <!-- Tab panes -->
     <div class="tab-content">
-        Apps Local
+       {{modules}}
     </div>
+</div> <!-- /ng-controller --> 
 </div> <!-- /ng-controller --> 
