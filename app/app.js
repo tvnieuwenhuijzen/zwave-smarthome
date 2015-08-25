@@ -75,23 +75,35 @@ myApp.config(['$routeProvider', function($routeProvider) {
                      requireLogin: true,
                     roles: cfg.role_access.apps
                 }).
-                 //Apps
+                 //Apps - local
                 when('/apps/local', { 
                     templateUrl: 'app/views/apps/apps_local.html',
                      requireLogin: true,
-                    roles: cfg.role_access.apps
+                    roles: cfg.role_access.apps_local
                 }).
                 //Apps - local detail
                 when('/apps/local/:id', {
-                    templateUrl: 'app/views/apps/app_local_detail.html',
+                    templateUrl: 'app/views/apps/apps_local_id.html',
                     requireLogin: true,
                     roles: cfg.role_access.apps_local
                 }).
-                //Apps - online detail
-                when('/apps/online/:id', {
-                    templateUrl: 'app/views/apps/app_online_detail.html',
+                //Apps - online
+                when('/apps/online', {
+                    templateUrl: 'app/views/apps/apps_online.html',
                     requireLogin: true,
                    roles: cfg.role_access.apps_online
+                }).
+                //Apps - online detail
+                when('/apps/online/:id', {
+                    templateUrl: 'app/views/apps/apps_online_id.html',
+                    requireLogin: true,
+                   roles: cfg.role_access.apps_online
+                }).
+                 //Apps - active
+                when('/apps/active', {
+                    templateUrl: 'app/views/apps/apps_active.html',
+                    requireLogin: true,
+                    roles: cfg.role_access.apps
                 }).
                 //Module
                 when('/module/:action/:id', {
