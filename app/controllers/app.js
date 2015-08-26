@@ -293,13 +293,18 @@ myAppController.controller('AppController', function($scope, $window, $cookies, 
 myAppController.controller('AppParentController', function($scope, $window, $cookies, $timeout, $route, dataFactory, dataService, myCache, _) {
     $scope.categories = [];
     $scope.local = {
-        modules: [],
+        collection: [],
          ids: [],
          imgs:[],
-         cats:[],
-         mediaUrl: $scope.cfg.server_url + $scope.cfg.api_url + 'load/modulemedia/'
+         cats:[]
     };
-     //$scope.moduleMediaUrl = $scope.cfg.server_url + $scope.cfg.api_url + 'load/modulemedia/';
+    $scope.online = {
+       collection: []
+    };
+    $scope.active = {
+       collection: []
+    };
+    $scope.moduleMediaUrl = $scope.cfg.server_url + $scope.cfg.api_url + 'load/modulemedia/';
     $scope.onlineMediaUrl = $scope.cfg.online_module_img_url;
      /**
      * Load categories
@@ -315,7 +320,7 @@ myAppController.controller('AppParentController', function($scope, $window, $coo
     /**
      * Load local modules
      */
-    $scope.loadModules = function(query) {
+    $scope.loadLocal = function(query) {
         var filter = null;
         if ($scope.user.role === 1 && $scope.user.expert_view) {
             filter = null;
@@ -346,7 +351,7 @@ myAppController.controller('AppParentController', function($scope, $window, $coo
                     return item;
                 }
             });
-            $scope.local.modules = _.where(modulesFiltered, query);
+            $scope.local.collection = _.where(modulesFiltered, query);
             $scope.loading = false;
             dataService.updateTimeTick();
         }, function(error) {
@@ -354,7 +359,65 @@ myAppController.controller('AppParentController', function($scope, $window, $coo
             dataService.showConnectionError(error);
         });
     };
-    //$scope.loadModules();
+    
+    /**
+     * Load online apps
+     */
+    $scope.loadOnline = function() {
+        dataFactory.getRemoteData($scope.cfg.online_module_url).then(function(response) {
+//            $scope.onlineModules = response.data;
+//            angular.forEach(response.data, function(v, k) {
+//                if (v.modulename && v.modulename != '') {
+//                    $scope.onlineVersion[v.modulename] = v.version;
+//                }
+//            });
+            $scope.online.collection = _.filter(response.data, function(item) {
+                var isHidden = false;
+                if ($scope.getHiddenApps().indexOf(item.modulename) > -1) {
+                    if ($scope.user.role !== 1) {
+                        isHidden = true;
+                    } else {
+                        isHidden = ($scope.user.expert_view ? false : true);
+                    }
+                }
+
+                if (!isHidden) {
+                    return item;
+                }
+            });
+            $scope.loading = false;
+            dataService.updateTimeTick();
+        }, function(error) {
+            $scope.loading = false;
+            dataService.showConnectionError(error);
+        });
+    };
+    
+    /**
+     * Load active apps
+     */
+    $scope.loadActive = function() {
+        dataFactory.getApi('instances').then(function(response) {
+            $scope.active.collection = _.reject(response.data.data, function(v) {
+                //return v.state === 'hidden' && ($scope.user.role !== 1 && $scope.user.expert_view !== true);
+                if ($scope.getHiddenApps().indexOf(v.moduleId) > -1) {
+                    if ($scope.user.role !== 1) {
+                        return true;
+                    } else {
+                        return ($scope.user.expert_view ? false : true);
+                    }
+
+                } else {
+                    return false;
+                }
+            });
+            $scope.loading = false;
+            dataService.updateTimeTick();
+        }, function(error) {
+            $scope.loading = false;
+            dataService.showConnectionError(error);
+        });
+    };
 
 });
 /**
@@ -420,6 +483,9 @@ myAppController.controller('AppLocalDetailController', function($scope, $routePa
  */
 myAppController.controller('AppOnlineController', function($scope, $window, $cookies, $timeout, $route, dataFactory, dataService, myCache, _) {
    $scope.activeTab = 'online';
+   
+   $scope.loadLocal();
+   $scope.loadOnline();
 
 });
 /**
@@ -508,33 +574,9 @@ myAppController.controller('AppOnlineDetailController', function($scope, $routeP
 myAppController.controller('AppActiveController', function($scope, $window, $cookies, $timeout, $route, dataFactory, dataService, myCache, _) {
    $scope.activeTab = 'active';
    $scope.instances = [];
-    /**
-     * Load instances
-     */
-    $scope.loadInstances = function() {
-        dataFactory.getApi('instances').then(function(response) {
-            $scope.instances = _.reject(response.data.data, function(v) {
-                //return v.state === 'hidden' && ($scope.user.role !== 1 && $scope.user.expert_view !== true);
-                if ($scope.getHiddenApps().indexOf(v.moduleId) > -1) {
-                    if ($scope.user.role !== 1) {
-                        return true;
-                    } else {
-                        return ($scope.user.expert_view ? false : true);
-                    }
-
-                } else {
-                    return false;
-                }
-            });
-            $scope.loading = false;
-            dataService.updateTimeTick();
-        }, function(error) {
-            $scope.loading = false;
-            dataService.showConnectionError(error);
-        });
-    };
-   $scope.loadModules();
-   $scope.loadInstances();
+    
+   $scope.loadLocal();
+   $scope.loadActive();
    
    /**
      * Ictivate instance
