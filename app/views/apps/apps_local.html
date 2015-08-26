@@ -1,11 +1,55 @@
-<!-- Online app view -->
+<!-- Local app view -->
 <div ng-controller="AppParentController">
 <div ng-controller="AppLocalController">
     <!-- Navigation --> 
     <div ng-include="'app/views/apps/nav.html'"></div>
     <!-- Tab panes -->
     <div class="tab-content">
-       {{modules}}
+       <div class="row row-page" id="_page_app_local">
+            <div class="col-lg-4 col-md-6 col-sm-6 app-entry"
+                 id="local_module_{{v.id}}" 
+                 ng-repeat="v in local.collection |orderBy:'defaults.title'| filter:q" 
+                 ng-class="online.versions[v.id] && online.versions[v.id] != v.version ? 'app-entry-green': ''"
+                 ng-init="moduleName = v.moduleName || v.id">
+               <div class="app-border app-gradient app-shadow app-entry-in" ng-class="online.versions[v.id] && online.versions[v.id] != v.version ? 'app-gradient-green': ''">
+                   <a href="#apps/local/{{v.id}}">
+                        <img class="app-image" ng-src="{{moduleMediaUrl + moduleName + '/' + v.icon}}" ng-if="v.icon" alt="{{v.defaults.title}}" />
+                        <img class="app-image" ng-src="storage/img/placeholder-img.png" ng-if="!v.icon" alt="{{v.defaults.title}}" />
+                     </a>
+
+                    <div class="app-body">
+                        <h3 class="entry-title"><a href="#apps/local/{{v.id}}" ng-bind="v.defaults.title"></a>  &raquo;</h3>
+                     </div>
+                    <div class="app-footer">
+                        <div class="app-footer-in">
+                            <a href="#module/post/{{v.id}}" class="btn btn-default btn-sm">
+                                <i class="fa fa-plus fa-lg text-success"></i> <span class="btn-name" ng-bind="_t('lb_add_app')"></span>
+                            </a>
+                            <!--<a href="" class="btn btn-default btn-sm" ng-click="deleteModule('#local_module_' + v.id, {'id': v.id}, _t('lb_delete_confirm'))" ng-if="!v.islocal">
+                                <i class="fa fa-remove fa-lg text-danger"></i> <span class="btn-name" ng-bind="_t('lb_remove')"></span>
+                            </a> -->
+                         </div>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+     <div id="footer">
+        <div class="navbar navbar-default navbar-fixed-bottom">
+            <div class="container">
+                <div class="form-inline" role="form">
+                    <select class="form-control" ng-model="category">
+                        <option value="" ng-bind="_t('lb_all')"></option>
+                        <option ng-repeat="v in categories" value="{{v.id}}" ng-if="local.cats.indexOf(v.id) > -1" ng-selected="category == v.id" ng-bind="v.name">
+                        </option>
+                    </select>
+                    <div class="input-group search-form hide-on-mobile">
+                        <input type="text" ng-model="q" class="form-control">
+                        <span class="input-group-addon"><i class="fa fa-search"></i></span> 
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div> <!-- /ng-controller --> 
 </div> <!-- /ng-controller --> 
