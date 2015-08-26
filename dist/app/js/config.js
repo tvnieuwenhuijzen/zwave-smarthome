@@ -43,6 +43,8 @@ var config_data = {
         //'zwave_jsrun_url': 'JS/Run/',
         // Local data path
         'local_data_url': 'storage/data/',
+        // Help data path
+        'help_data_url': 'storage/help/',
         // Online module url
         'online_module_url': 'http://hrix.net/modules_store/json_store.php',
         // Online module img url
@@ -170,7 +172,6 @@ var config_data = {
                     'BatteryPolling',
                     'CustomUserCode',
                     'CustomUserCodeLoader',
-                    'HTTPDevice',
                     'InbandNotifications',
                     'Notification',
                     'NotificationSMSru',
@@ -178,17 +179,22 @@ var config_data = {
                     'SecurityMode',
                     'SensorValueLogging',
                     'SensorsPollingLogging',
-                    'YandexProbki'
+                    'YandexProbki',
+                    'CodeDevice',
+                    'InfoWidget',
+                    'SensorsPolling',
+                    'SwitchControlGenerator',
+                    'ZWave'
                 ]
             },
             'popp': {
                 'logo': 'app/img/app-logo-popp.png',
                 'hidden_apps': [
                     'Cron',
+					'CodeDevice',
                     'BatteryPolling',
                     'CustomUserCode',
                     'CustomUserCodeLoader',
-                    'HTTPDevice',
                     'InbandNotifications',
                     'Notification',
                     'NotificationSMSru',
@@ -196,7 +202,11 @@ var config_data = {
                     'SecurityMode',
                     'SensorValueLogging',
                     'SensorsPollingLogging',
-                    'YandexProbki'
+                    'YandexProbki',
+                    'InfoWidget',
+                    'SensorsPolling',
+                    'SwitchControlGenerator',
+                    'ZWave'
                 ]
             },
             'wd': {
@@ -204,9 +214,9 @@ var config_data = {
                 'hidden_apps': [
                     'Cron',
                     'BatteryPolling',
+					'CodeDevice',
                     'CustomUserCode',
                     'CustomUserCodeLoader',
-                    'HTTPDevice',
                     'InbandNotifications',
                     'Notification',
                     'NotificationSMSru',
@@ -214,7 +224,11 @@ var config_data = {
                     'SecurityMode',
                     'SensorValueLogging',
                     'SensorsPollingLogging',
-                    'YandexProbki'
+                    'YandexProbki',
+                    'InfoWidget',
+                    'SensorsPolling',
+                    'SwitchControlGenerator',
+                    'ZWave'
                 ]
             }
         }

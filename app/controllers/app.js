@@ -378,8 +378,35 @@ myAppController.controller('AppOnlineController', function($scope, $window, $coo
  * App online detail controller
  */
 myAppController.controller('AppOnlineDetailController', function($scope, $routeParams, $timeout, $location, dataFactory, dataService, _) {
+    $scope.local = {
+        installed: false
+    };
     $scope.module = [];
+    $scope.categoryName = '';
     $scope.onlineMediaUrl = $scope.cfg.online_module_img_url;
+    
+    /**
+     * Load categories
+     */
+    $scope.loadCategories = function(id) {
+        dataFactory.getApi('modules_categories').then(function(response) {
+           var category = _.findWhere(response.data.data, {id: id});
+           if(category){
+               $scope.categoryName = category.name;
+           }
+        }, function(error) {
+            dataService.showConnectionError(error);
+        });
+    };
+    /**
+     * Load local modules
+     */
+    $scope.loadModules = function(query) {
+       dataFactory.getApi('modules').then(function(response) {
+           $scope.local.installed = _.findWhere(response.data.data, query);
+           console.log($scope.local)
+        }, function(error) {});
+    };
     /**
      * Load module detail
      */
@@ -396,6 +423,8 @@ myAppController.controller('AppOnlineDetailController', function($scope, $routeP
                 $location.path('/error/404');
                 return;
             }
+            $scope.loadModules({moduleName: id});
+            $scope.loadCategories($scope.module.category);
             dataService.updateTimeTick();
         }, function(error) {
             $location.path('/error/' + error.status);

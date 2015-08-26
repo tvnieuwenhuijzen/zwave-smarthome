@@ -4829,7 +4829,8 @@ myAppFactory.factory('dataFactory', function($http, $filter, $q, myCache, dataSe
         zmeCapabilities: zmeCapabilities,
         postReport: postReport,
         installOnlineModule: installOnlineModule,
-        restoreFromBck: restoreFromBck
+        restoreFromBck: restoreFromBck,
+        getHelp:getHelp
     });
 
     /// --- Public functions --- ///
@@ -5487,6 +5488,22 @@ myAppFactory.factory('dataFactory', function($http, $filter, $q, myCache, dataSe
             } else {// invalid response
                 return $q.reject(response);
             }
+        }, function(response) {// something went wrong
+            return $q.reject(response);
+        });
+
+    }
+    
+    
+     /**
+     * Get help file
+     */
+    function getHelp(file) {
+        return $http({
+            method: 'get',
+            url: cfg.help_data_url + file
+        }).then(function(response) {
+            return response;
         }, function(response) {// something went wrong
             return $q.reject(response);
         });
@@ -6376,6 +6393,50 @@ myApp.directive('bbAlert', function() {
                 + ' <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'
                 + '<i class="fa fa-lg" ng-class="alert.icon"></i> <span ng-bind-html="alert.message|toTrusted"></span>'
                 + '</div>'
+    };
+});
+
+/**
+ * Help directive
+ */
+myApp.directive('bbHelp', function(dataFactory,cfg) {
+    return {
+        restrict: "E",
+        replace: true,
+//        scope: {
+//            lang: '&',
+//            file: '='
+//        },
+        template: '<span><a href="" ng-click="clickMe(file)"><i class="fa fa-question-circle fa-lg text-info"></i></a>'
+                + '<div class="modal modal-vertical-centered fade" id="help_{{file}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">'
+                + '<div class="modal-dialog modal-dialog-center"><div class="modal-content">'
+                + '<div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button></div>'
+                + ' <div class="modal-body" ng-bind-html="helpData|toTrusted"></div>'
+                + '</div></div>'
+                + '</div>'
+                + '</span>',
+        link: function(scope, elem, attrs) {
+            scope.file = attrs.file;
+            scope.helpData = null;
+            scope.clickMe = function(file) {
+                var defaultLang = 'en';
+                var lang = attrs.lang;
+                var helpFile = scope.file + '.' + lang + '.html';
+                $('#help_' + scope.file).modal();
+                // Load help file for given language
+                dataFactory.getHelp(helpFile).then(function(response) {
+                    scope.helpData = response.data;
+                }, function(error) {
+                    // Load help file for default language
+                    helpFile = scope.file + '.' + defaultLang + '.html';
+                    dataFactory.getHelp(helpFile).then(function(response) {
+                        scope.helpData = response.data;
+                    }, function(error) {
+                        //helpFile = file + '.' + cfg.lang + '.html';
+                    });
+                });
+            };
+        }
     };
 });
 
@@ -8573,13 +8634,26 @@ myAppController.controller('AppController', function($scope, $window, $cookies, 
      * Load online modules
      */
     $scope.loadOnlineModules = function() {
-        //return;
-        // Uncomment after integration
+        
         dataFactory.getRemoteData($scope.cfg.online_module_url).then(function(response) {
-            $scope.onlineModules = response.data;
-            angular.forEach(response.data, function(v, k) {
-                if (v.modulename && v.modulename != '') {
-                    $scope.onlineVersion[v.modulename] = v.version;
+//            $scope.onlineModules = response.data;
+//            angular.forEach(response.data, function(v, k) {
+//                if (v.modulename && v.modulename != '') {
+//                    $scope.onlineVersion[v.modulename] = v.version;
+//                }
+//            });
+            $scope.onlineModules = _.filter(response.data, function(item) {
+                var isHidden = false;
+                if ($scope.getHiddenApps().indexOf(item.modulename) > -1) {
+                    if ($scope.user.role !== 1) {
+                        isHidden = true;
+                    } else {
+                        isHidden = ($scope.user.expert_view ? false : true);
+                    }
+                }
+
+                if (!isHidden) {
+                    return item;
                 }
             });
             $scope.loading = false;
@@ -8816,8 +8890,35 @@ myAppController.controller('AppLocalDetailController', function($scope, $routePa
  * App online detail controller
  */
 myAppController.controller('AppOnlineDetailController', function($scope, $routeParams, $timeout, $location, dataFactory, dataService, _) {
+    $scope.local = {
+        installed: false
+    };
     $scope.module = [];
+    $scope.categoryName = '';
     $scope.onlineMediaUrl = $scope.cfg.online_module_img_url;
+    
+    /**
+     * Load categories
+     */
+    $scope.loadCategories = function(id) {
+        dataFactory.getApi('modules_categories').then(function(response) {
+           var category = _.findWhere(response.data.data, {id: id});
+           if(category){
+               $scope.categoryName = category.name;
+           }
+        }, function(error) {
+            dataService.showConnectionError(error);
+        });
+    };
+    /**
+     * Load local modules
+     */
+    $scope.loadModules = function(query) {
+       dataFactory.getApi('modules').then(function(response) {
+           $scope.local.installed = _.findWhere(response.data.data, query);
+           console.log($scope.local)
+        }, function(error) {});
+    };
     /**
      * Load module detail
      */
@@ -8834,6 +8935,8 @@ myAppController.controller('AppOnlineDetailController', function($scope, $routeP
                 $location.path('/error/404');
                 return;
             }
+            $scope.loadModules({moduleName: id});
+            $scope.loadCategories($scope.module.category);
             dataService.updateTimeTick();
         }, function(error) {
             $location.path('/error/' + error.status);
@@ -9108,7 +9211,7 @@ myAppController.controller('DeviceIpCameraController', function($scope, dataFact
 /**
  * Device Include controller
  */
-myAppController.controller('IncludeController', function($scope, $routeParams, $interval, $filter, dataFactory, dataService, myCache) {
+myAppController.controller('DeviceIncludeController', function($scope, $routeParams, $interval, $filter,$route, dataFactory, dataService, myCache) {
     $scope.apiDataInterval = null;
     $scope.includeDataInterval = null;
     $scope.device = {
@@ -9136,6 +9239,11 @@ myAppController.controller('IncludeController', function($scope, $routeParams, $
     $scope.zWaveDevice = [];
     $scope.devices = [];
     $scope.dev = [];
+    
+    $scope.formInput = {
+        elements: {},
+        room: undefined
+    };
     $scope.rooms = [];
     $scope.modelRoom;
     // Cancel interval on page destroy
@@ -9286,6 +9394,15 @@ myAppController.controller('IncludeController', function($scope, $routeParams, $
      * Watch for last excluded device
      */
     //$scope.$watch('interviewCfg', function() {});
+    
+    /**
+     * Retry inclusion
+     */
+    $scope.retryInclusion = function() {
+         myCache.removeAll();
+        $route.reload();
+        $scope.runZwaveCmd('controller.RemoveNodeFromNetwork(1)');
+    };
 
 
     /**
@@ -9356,6 +9473,21 @@ myAppController.controller('IncludeController', function($scope, $routeParams, $
         $scope.loadData();
         $scope.loading = false;
         return;
+
+    };
+     /**
+     * Update all devices
+     */
+    $scope.updateAllDevices = function() {
+        $scope.loading = {status: 'loading-spin', icon: 'fa-spinner fa-spin', message: $scope._t('updating')};
+       angular.forEach($scope.formInput.elements, function(v, k) {
+                dataFactory.putApi('devices', v.id, v).then(function(response) {
+                }, function(error) {});
+        });
+        myCache.remove('devices');
+        $scope.updateDevices = true;
+       //$scope.loadData($routeParams.nodeId);
+       $scope.loading = false;
 
     };
     /**
@@ -9537,6 +9669,7 @@ myAppController.controller('IncludeController', function($scope, $routeParams, $
                     obj['visibility'] = v.visibility;
                     obj['level'] = $filter('toInt')(v.metrics.level);
                     obj['metrics'] = v.metrics;
+                    $scope.formInput.elements[v.id] = obj;
                     $scope.devices.push(obj);
                 }
 
@@ -11147,7 +11280,7 @@ myAppController.controller('NetworkConfigController', function($scope, $routePar
     /**
      * Update all devices
      */
-    $scope.updateAllDevices = function(input) {
+    $scope.updateAllDevices = function() {
         $scope.loading = {status: 'loading-spin', icon: 'fa-spinner fa-spin', message: $scope._t('updating')};
        angular.forEach($scope.formInput.elements, function(v, k) {
                 var errors = 0;
@@ -11591,7 +11724,7 @@ myAppController.controller('AdminController', function($scope, $window, $locatio
 //        var progressInterval = $interval(refresh, 500);
 //    };
 
-    
+    /************************************** Firmware **************************************/
     /**
      * Show modal window
      */
@@ -11852,6 +11985,7 @@ myAppController.controller('MyAccessController', function($scope, $window, $loca
             myCache.remove('profiles');
             dataService.setUser(data);
             $window.location.reload();
+            $window.history.back();
             //$route.reload();
 
         }, function(error) {
@@ -11882,6 +12016,7 @@ myAppController.controller('MyAccessController', function($scope, $window, $loca
                 return;
             }
             $scope.loading = {status: 'loading-fade', icon: 'fa-check text-success', message: $scope._t('success_updated')};
+            $window.history.back();
 
         }, function(error) {
             alert($scope._t('error_update_data'));
