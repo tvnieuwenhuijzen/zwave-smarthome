@@ -1,4 +1,4 @@
-zwave-smarthome
+SmartHome UI
 ===============
 
 Angular app

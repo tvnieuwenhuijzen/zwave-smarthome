@@ -1,6 +1,8 @@
 <!-- AppLocalDetailController -->
-<div ng-controller="AppLocalDetailController">
+<div ng-controller="AppParentController">
+<div ng-controller="AppLocalIdController">
      <bb-loader></bb-loader>
+     {{_.findWhere(categories, {modulename: 'AutoLock'})}}
      <div class="app-border app-gradient app-shadow app-detail-header">
         <div class="app-detail-header-in">
             <div class="app-detail-img">
@@ -40,5 +42,5 @@
         </div>
       </div>
     </div>
-
+</div> <!-- /ng-controller --> 
 </div> <!-- /ng-controller --> 

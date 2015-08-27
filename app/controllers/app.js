@@ -291,7 +291,10 @@ myAppController.controller('AppController', function($scope, $window, $cookies, 
  * App local controller
  */
 myAppController.controller('AppParentController', function($scope, $window, $cookies, $timeout, $route, dataFactory, dataService, myCache, _) {
-    $scope.categories = [];
+    $scope.categories = {
+        collection: [],
+        single: []
+    };
     $scope.category = '';
     $scope.local = {
         collection: [],
@@ -313,7 +316,7 @@ myAppController.controller('AppParentController', function($scope, $window, $coo
      */
     $scope.loadCategories = function() {
         dataFactory.getApi('modules_categories').then(function(response) {
-            $scope.categories = response.data.data;
+            $scope.categories.colection = response.data.data;
         }, function(error) {
             dataService.showConnectionError(error);
         });
@@ -496,11 +499,13 @@ myAppController.controller('AppLocalController', function($scope, $window, $cook
 /**
  * App local detail controller
  */
-myAppController.controller('AppLocalDetailController', function($scope, $routeParams, $location, dataFactory, dataService, _) {
+myAppController.controller('AppLocalIdController', function($scope, $routeParams, $location, dataFactory, dataService, _) {
     $scope.module = [];
     $scope.categoryName = '';
     $scope.isOnline = null;
     $scope.moduleMediaUrl = $scope.cfg.server_url + $scope.cfg.api_url + 'load/modulemedia/';
+    $scope.loadCategories()
+    console.log($scope.categories)
     /**
      * Load categories
      */
@@ -519,6 +524,21 @@ myAppController.controller('AppLocalDetailController', function($scope, $routePa
      * Load module detail
      */
     $scope.loadModule = function(id) {
+        dataService.showConnectionSpinner();
+        //$scope.loading = {status: 'loading-spin', icon: 'fa-spinner fa-spin', message: $scope._t('loading')};
+        dataFactory.getApi('modules', '/' + id).then(function(response) {
+            loadOnlineModules(id);
+            $scope.module = response.data.data;
+            $scope.loadCategories(response.data.data.category);
+            //$scope.loading = false;
+        }, function(error) {
+            $scope.loading = false;
+            $location.path('/error/' + error.status);
+        });
+    };
+    $scope.loadModule($routeParams.id);
+    
+    $scope.getCategoryName = function(id) {
         dataService.showConnectionSpinner();
         //$scope.loading = {status: 'loading-spin', icon: 'fa-spinner fa-spin', message: $scope._t('loading')};
         dataFactory.getApi('modules', '/' + id).then(function(response) {

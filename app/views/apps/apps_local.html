@@ -40,7 +40,7 @@
                 <div class="form-inline" role="form">
                     <select class="form-control" ng-model="category">
                         <option value="" ng-bind="_t('lb_all')"></option>
-                        <option ng-repeat="v in categories" value="{{v.id}}" ng-if="local.cats.indexOf(v.id) > -1" ng-selected="category == v.id" ng-bind="v.name">
+                        <option ng-repeat="v in categories.collection" value="{{v.id}}" ng-if="local.cats.indexOf(v.id) > -1" ng-selected="category == v.id" ng-bind="v.name">
                         </option>
                     </select>
                     <div class="input-group search-form hide-on-mobile">
