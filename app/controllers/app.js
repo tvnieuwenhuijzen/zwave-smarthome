@@ -6,7 +6,7 @@
 /**
  * App controller
  */
-myAppController.controller('AppController', function($scope, $window, $cookies, $timeout, $route, dataFactory, dataService, myCache, _) {
+myAppController.controller('_AppController', function($scope, $window, $cookies, $timeout, $route, dataFactory, dataService, myCache, _) {
     $scope.instances = [];
     $scope.hasImage = [];
     $scope.modules = [];
@@ -290,7 +290,7 @@ myAppController.controller('AppController', function($scope, $window, $cookies, 
 /**
  * App local controller
  */
-myAppController.controller('AppParentController', function($scope, $window, $cookies, $timeout, $route, dataFactory, dataService, myCache, _) {
+myAppController.controller('AppController', function($scope, $window, $cookies, $timeout, $route, dataFactory, dataService, myCache, _) {
     $scope.categories = {
         collection: [],
         single: []
@@ -298,12 +298,14 @@ myAppController.controller('AppParentController', function($scope, $window, $coo
     $scope.category = '';
     $scope.local = {
         collection: [],
+        single: [],
         ids: [],
         imgs: [],
         cats: []
     };
     $scope.online = {
         collection: [],
+        single: [],
         versions: []
     };
     $scope.active = {
@@ -314,9 +316,10 @@ myAppController.controller('AppParentController', function($scope, $window, $coo
     /**
      * Load categories
      */
-    $scope.loadCategories = function() {
+    $scope.loadCategories = function(find) {
         dataFactory.getApi('modules_categories').then(function(response) {
-            $scope.categories.colection = response.data.data;
+            $scope.categories.collection = response.data.data;
+            $scope.categories.single = _.findWhere(response.data.data, find);
         }, function(error) {
             dataService.showConnectionError(error);
         });
@@ -325,16 +328,13 @@ myAppController.controller('AppParentController', function($scope, $window, $coo
     /**
      * Load local modules
      */
-    $scope.loadLocal = function(query) {
-        var filter = null;
-        if ($scope.user.role === 1 && $scope.user.expert_view) {
-            filter = null;
-        } else {
-            filter = {filter: "state", val: "hidden", not: true};
-        }
+    $scope.loadLocal = function(query,find) {
         dataFactory.getApi('modules').then(function(response) {
+            $scope.local.single = _.findWhere(response.data.data, find);
             var modulesFiltered = _.filter(response.data.data, function(item) {
                 var isHidden = false;
+                $scope.local.ids.push(item.id);
+                    $scope.local.imgs[item.id] = item.icon;
                 if ($scope.getHiddenApps().indexOf(item.moduleName) > -1) {
                     if ($scope.user.role !== 1) {
                         isHidden = true;
@@ -348,8 +348,6 @@ myAppController.controller('AppParentController', function($scope, $window, $coo
                 }
 
                 if (!isHidden) {
-                    $scope.local.ids.push(item.id);
-                    $scope.local.imgs[item.id] = item.icon;
                     if (item.category && $scope.local.cats.indexOf(item.category) === -1) {
                         $scope.local.cats.push(item.category);
                     }
@@ -368,8 +366,9 @@ myAppController.controller('AppParentController', function($scope, $window, $coo
     /**
      * Load online apps
      */
-    $scope.loadOnline = function() {
+    $scope.loadOnline = function(find) {
         dataFactory.getRemoteData($scope.cfg.online_module_url).then(function(response) {
+             $scope.online.single = _.findWhere(response.data, find);
             $scope.online.collection = _.filter(response.data, function(item) {
                 var isHidden = false;
                 if ($scope.getHiddenApps().indexOf(item.modulename) > -1) {
@@ -399,7 +398,6 @@ myAppController.controller('AppParentController', function($scope, $window, $coo
     $scope.loadActive = function() {
         dataFactory.getApi('instances').then(function(response) {
             $scope.active.collection = _.reject(response.data.data, function(v) {
-                //return v.state === 'hidden' && ($scope.user.role !== 1 && $scope.user.expert_view !== true);
                 if ($scope.getHiddenApps().indexOf(v.moduleId) > -1) {
                     if ($scope.user.role !== 1) {
                         return true;
@@ -501,24 +499,6 @@ myAppController.controller('AppLocalController', function($scope, $window, $cook
  */
 myAppController.controller('AppLocalIdController', function($scope, $routeParams, $location, dataFactory, dataService, _) {
     $scope.module = [];
-    $scope.categoryName = '';
-    $scope.isOnline = null;
-    $scope.moduleMediaUrl = $scope.cfg.server_url + $scope.cfg.api_url + 'load/modulemedia/';
-    $scope.loadCategories()
-    console.log($scope.categories)
-    /**
-     * Load categories
-     */
-    $scope.loadCategories = function(id) {
-        dataFactory.getApi('modules_categories').then(function(response) {
-            var category = _.findWhere(response.data.data, {id: id});
-            if (category) {
-                $scope.categoryName = category.name;
-            }
-        }, function(error) {
-            dataService.showConnectionError(error);
-        });
-    };
 
     /**
      * Load module detail
@@ -527,9 +507,9 @@ myAppController.controller('AppLocalIdController', function($scope, $routeParams
         dataService.showConnectionSpinner();
         //$scope.loading = {status: 'loading-spin', icon: 'fa-spinner fa-spin', message: $scope._t('loading')};
         dataFactory.getApi('modules', '/' + id).then(function(response) {
-            loadOnlineModules(id);
-            $scope.module = response.data.data;
-            $scope.loadCategories(response.data.data.category);
+           $scope.loadOnline({modulename:id}) ;
+           $scope.loadCategories({id: response.data.data.category});
+           $scope.module = response.data.data;
             //$scope.loading = false;
         }, function(error) {
             $scope.loading = false;
@@ -537,30 +517,6 @@ myAppController.controller('AppLocalIdController', function($scope, $routeParams
         });
     };
     $scope.loadModule($routeParams.id);
-    
-    $scope.getCategoryName = function(id) {
-        dataService.showConnectionSpinner();
-        //$scope.loading = {status: 'loading-spin', icon: 'fa-spinner fa-spin', message: $scope._t('loading')};
-        dataFactory.getApi('modules', '/' + id).then(function(response) {
-            loadOnlineModules(id);
-            $scope.module = response.data.data;
-            $scope.loadCategories(response.data.data.category);
-            //$scope.loading = false;
-        }, function(error) {
-            $scope.loading = false;
-            $location.path('/error/' + error.status);
-        });
-    };
-    $scope.loadModule($routeParams.id);
-
-    /// --- Private functions --- ///
-    function loadOnlineModules(moduleName) {
-        dataFactory.getRemoteData($scope.cfg.online_module_url).then(function(response) {
-            $scope.isOnline = _.findWhere(response.data, {modulename: moduleName});
-            dataService.updateTimeTick();
-        }, function(error) {
-        });
-    }
 
 });
 /**
@@ -576,37 +532,8 @@ myAppController.controller('AppOnlineController', function($scope, $window, $coo
 /**
  * App online detail controller
  */
-myAppController.controller('AppOnlineDetailController', function($scope, $routeParams, $timeout, $location, dataFactory, dataService, _) {
-    $scope.local = {
-        installed: false
-    };
+myAppController.controller('AppOnlineIdController', function($scope, $routeParams, $timeout, $location, dataFactory, dataService, _) {
     $scope.module = [];
-    $scope.categoryName = '';
-    $scope.onlineMediaUrl = $scope.cfg.online_module_img_url;
-
-    /**
-     * Load categories
-     */
-    $scope.loadCategories = function(id) {
-        dataFactory.getApi('modules_categories').then(function(response) {
-            var category = _.findWhere(response.data.data, {id: id});
-            if (category) {
-                $scope.categoryName = category.name;
-            }
-        }, function(error) {
-            dataService.showConnectionError(error);
-        });
-    };
-    /**
-     * Load local modules
-     */
-    $scope.loadModules = function(query) {
-        dataFactory.getApi('modules').then(function(response) {
-            $scope.local.installed = _.findWhere(response.data.data, query);
-            console.log($scope.local)
-        }, function(error) {
-        });
-    };
     /**
      * Load module detail
      */
@@ -623,8 +550,8 @@ myAppController.controller('AppOnlineDetailController', function($scope, $routeP
                 $location.path('/error/404');
                 return;
             }
-            $scope.loadModules({moduleName: id});
-            $scope.loadCategories($scope.module.category);
+            $scope.loadLocal(null,{moduleName:id}) ;
+           $scope.loadCategories({id: $scope.module.category});
             dataService.updateTimeTick();
         }, function(error) {
             $location.path('/error/' + error.status);
@@ -632,26 +559,6 @@ myAppController.controller('AppOnlineDetailController', function($scope, $routeP
     };
 
     $scope.loadModule($routeParams.id);
-
-    /**
-     * Download module
-     */
-    $scope.downloadModule = function(id) {
-        $scope.loading = {status: 'loading-spin', icon: 'fa-spinner fa-spin', message: $scope._t('downloading')};
-        var data = {
-            moduleUrl: $scope.cfg.online_module_download_url + id + '.tar.gz'
-        };
-        dataFactory.installOnlineModule(data).then(function(response) {
-            $timeout(function() {
-                $scope.loading = {status: 'loading-fade', icon: 'fa-check text-success', message: $scope._t('success_module_download')};
-            }, 3000);
-
-        }, function(error) {
-            $scope.loading = false;
-            alert($scope._t('error_no_module_download'));
-        });
-
-    };
 
 });
 /**

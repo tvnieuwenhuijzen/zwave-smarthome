@@ -1,7 +1,8 @@
 <!-- AppOnlineDetailController -->
-<div ng-controller="AppOnlineDetailController">
+<div ng-controller="AppController">
+<div ng-controller="AppOnlineIdController">
      <bb-loader></bb-loader>
-    <div class="app-border app-gradient app-shadow app-detail-header">
+     <div class="app-border app-gradient app-shadow app-detail-header">
         <div class="app-detail-header-in" ng-if="module">
             <div class="app-detail-img">
               <img class="app-image-detail" ng-src="{{onlineMediaUrl + module.icon}}" ng-if="module.icon" alt="{{module.title}}" />
@@ -12,7 +13,7 @@
                 <h2 class="page-subtitle" ng-bind="module.title"></h2>
                 <p class="app-detail-perex" ng-bind-html="module.desc|toTrusted"></p>
                 <p class="app-detail-list" ng-show="module.category">
-                    <i class="fa fa-list fa-lg"></i> <span ng-bind="categoryName"></span>
+                    <i class="fa fa-list fa-lg"></i> <span ng-bind="categories.single.name"></span>
                 </p>
                 <p class="app-detail-list" ng-show="module.author">
                     <i class="fa fa-user fa-lg"></i>
@@ -29,10 +30,10 @@
                     <i class="fa fa-clock-o fa-lg"></i> <span ng-bind="module.last_updated"></span>
                 </p>
                 <div class="app-detail-control">
-                    <button class="btn btn-default" ng-click="downloadModule(module.modulename)" ng-if="!local.installed">
+                    <button class="btn btn-default" ng-click="downloadModule(module.modulename)" ng-if="!local.single">
                         <i class="fa fa-lg text-success fa-download"></i> <span class="btn-name_">{{_t('lb_download')}}</span>
                     </button> 
-                    <button class="btn btn-default" disabled ng-if="local.installed">
+                    <button class="btn btn-default" disabled ng-if="local.single">
                         <i class="fa fa-check fa-lg"></i> <span class="btn-name_">{{_t('installed')}}</span>
                     </button> 
                     <button class="btn btn-default" ng-bind="_t('lb_cancel')" bb-go-back></button>
@@ -41,4 +42,5 @@
             </div>
         </div>
     </div>
+ </div> <!-- /ng-controller --> 
 </div> <!-- /ng-controller --> 

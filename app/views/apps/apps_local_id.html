@@ -1,8 +1,8 @@
 <!-- AppLocalDetailController -->
-<div ng-controller="AppParentController">
+<div ng-controller="AppController">
 <div ng-controller="AppLocalIdController">
      <bb-loader></bb-loader>
-     {{_.findWhere(categories, {modulename: 'AutoLock'})}}
+     {{online.single}}
      <div class="app-border app-gradient app-shadow app-detail-header">
         <div class="app-detail-header-in">
             <div class="app-detail-img">
@@ -17,7 +17,7 @@
                 <i class="fa fa-sitemap fa-lg"></i> <strong>{{_t('lb_instance_of')}}:</strong> <span ng-repeat="i in module.dependencies">{{i}}, </span>
             </p>
             <p class="app-detail-list" ng-show="module.category">
-                <i class="fa fa-list fa-lg"></i> <span ng-bind="categoryName"></span>
+                <i class="fa fa-list fa-lg"></i> <span ng-bind="categories.single.name"></span>
             </p>
             <p class="app-detail-list" ng-show="module.author">
                 <i class="fa fa-user fa-lg"></i>
