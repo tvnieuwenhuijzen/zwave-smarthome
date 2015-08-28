@@ -102,6 +102,21 @@ var config_data = {
             network_config_id: [1, 3],
             logout: [1, 2, 3, 4]
         },
+         // List of the routes
+        'routes': {
+            'dashboard': {
+                'url': 'elements/dashboard/1'
+            },
+            'elements': {
+                'url': 'elements'
+            },
+            'rooms': {
+                'url': 'rooms'
+            },
+            'events': {
+                'url': 'events'
+            }
+        },
         // List of language codes
         'lang_codes': {
             'en': 'en_EN',
