@@ -29,14 +29,6 @@ myAppController.controller('BaseController', function($scope, $cookies, $filter,
     };
     $scope.setPollInterval();
     
-     /**
-     * Get route
-     */
-    $scope.getRoute = function(params) {
-        console.log(cfg.routes)
-    };
-    //$scope.getRoute();
-
     $scope.elementAccess = function(roles, mobile) {
         if (!$scope.user) {
             return false;
@@ -156,6 +148,17 @@ myAppController.controller('BaseController', function($scope, $cookies, $filter,
         myCache.removeAll();
         $route.reload();
     };
+     /**
+     * Get route
+     */
+    $scope.getRoute = function(name,params) {
+        if(cfg.routes[name]){
+            return cfg.routes[name]['url'] + params || '';
+        }
+        return '';
+    };
+    //console.log($scope.getRoute('rooms','/25'))
+    //$scope.getRoute();
     /**
      * Redirect to given url
      */
