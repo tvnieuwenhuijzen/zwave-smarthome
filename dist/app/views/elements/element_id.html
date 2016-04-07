@@ -5,9 +5,9 @@
         <h2><span ng-bind="_t('lb_cfg_view')"></span>: <span ng-bind="elementId.input.metrics.title"></span></h2>
         <form name="form_element" id="form_element" class="form form-page" autocomplete="off" ng-submit="store(elementId.input)" novalidate>
             <fieldset ng-if="elementAccess(cfg.role_access.admin)">
-                 <!--<p class="form-control-static">
+                 <p class="form-control-static">
                             <span ng-bind="_t('element_id')"></span>: <strong ng-bind="elementId.input.id"></strong>
-                        </p>-->
+                        </p>
                 <div class="form-group_">
                     <label>{{_t('lb_element_name')}}:</label>
                     <input name="title" id="title" type="text" 
@@ -23,7 +23,7 @@
                         <div class="form-group" ng-if="elementId.appType.instance">
                             <span ng-bind="_t('lb_gen_by_module')"></span> 
                             <a class="btn btn-default" ng-href="#module/put/{{elementId.appType.instance.id}}">
-                                <strong>{{elementId.appType.instance.title}}</strong> - {{elementId.appType.instance.module}}
+                                <strong>{{elementId.appType.instance.title}}</strong>  <!--{{elementId.appType.instance.module}} -->
                             </a>
                         </div>
                         <!-- zwave -->
@@ -34,18 +34,30 @@
                         <div class="form-group" ng-if="elementId.appType.enocean">
                             {{_t('lb_gen_by')}} <a href="#enocean/manage/{{elementId.appType.enocean}}" class="btn btn-default">{{_t('enocean_device')}} #{{elementId.appType.enocean}}</a>
                         </div>
+                         <!-- Hide element -->
+                        <div class="form-group">
+                            <input type="checkbox" name="dashboard" id="dashboard" 
+                                    ng-init = "visibility.checked = !elementId.input.visibility"
+                                   ng-model="visibility.checked"
+                                  ng-change="elementId.input.visibility = !visibility.checked"
+                                   ng-checked="!elementId.input.visibility" /> <label>{{_t('hide_element')}}</label>
+                             <bb-help-text trans="_t('hide_element_info')"></bb-help-text>
+                        </div>
+                        
                    </div> 
+                  <!-- Deactivate element -->
+                        <div class="form-group" ng-if="elementAccess(cfg.role_access.admin) && elementId.appType.zwave">
+                            <input type="checkbox" name="permanently_hidden" id="permanently_hidden" value="" 
+                                   ng-model="elementId.input.permanently_hidden" 
+                                   ng-checked="elementId.input.permanently_hidden" /> <label>{{_t('lb_deactivate')}}</label>
+                             <bb-help-text trans="_t('deactivate_element_info')"></bb-help-text>
+                        </div>
                  
                     <!-- dashboard etc -->
                     <div class="form-group">
                         <div>
                             <input type="checkbox" name="dashboard" value="{{elementId.input.onDashboard}}" id="dashboard" 
                                    ng-model="elementId.input.onDashboard" ng-checked="elementId.input.onDashboard" /> <label>{{_t('lb_add_dashboard')}}</label>
-                        </div>
-                        <div ng-if="elementAccess(cfg.role_access.admin) && elementId.appType.zwave"> 
-                            <input type="checkbox" name="permanently_hidden" id="permanently_hidden" value="" 
-                                   ng-model="elementId.input.permanently_hidden" 
-                                   ng-checked="elementId.input.permanently_hidden" /> <label>{{_t('lb_permanently_hide')}}</label>
                         </div>
                         <div>
                             <input type="checkbox" name="hide_events" value="{{elementId.input.id}}" id="hide_events" 
@@ -54,7 +66,30 @@
                             <label>{{_t('lb_hide_events_device')}}</label>
                         </div>
                     </div>
-                    <!-- Rooms -->
+                     <!-- Rooms -->
+                    <div class="form-group form-inline" ng-if="elementAccess(cfg.role_access.admin)">
+                         <h3>{{_t('lb_assign_room')}}</h3>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default" 
+                                    ng-click="expandNavi('elidDropDown', $event)">
+                                {{elementId.locations[elementId.input.location].title|cutText:true:20}} <i class="fa fa-caret-down"></i>
+                            </button>
+                             <div class="app-dropdown app-dropdown-left" ng-if="naviExpanded.elidDropDown">
+                                 <ul>
+                                     <li class="clickable" 
+                                         ng-class="elementId.input.location == v.id ? 'active':''"
+                                         ng-click="elementId.input.location = v.id"
+                                         ng-repeat="v in elementId.locations">
+                                         <a>
+                                             <img class="navi-img" ng-src="{{v.img_src}}" alt="img" /> 
+                                             {{v.title|cutText:true:20}} <i class="fa fa-check menu-arrow" ng-if="elementId.input.location == v.id"></i>
+                                         </a>
+                                     </li>
+                                 </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Rooms
                     <div class="form-group form-inline" ng-if="elementAccess(cfg.role_access.admin)">
                         <label>{{_t('lb_assign_room')}} </label>
                         <select class="form-control" ng-model="elementId.input.location">
@@ -64,7 +99,7 @@
                                 {{(v.id === 0 ? _t(v.title) : v.title)}}
                             </option>
                         </select>
-                    </div>
+                    </div>-->
             </fieldset>
             <!-- <fieldset>
                  <h3>Icons</h3>
@@ -98,7 +133,7 @@
                 <div class="form-group form-inline">
                     <div class="input-group">
                         <input name="add_tag" id="add_tag" type="text" 
-                                         class="form-control" value="{{searchText}}" 
+                                         class="form-control"
                                          placeholder="{{_t('lb_add_tag')}}" 
                                          ng-model="searchText" bb-key-event="searchMe(searchText);" data-toggle="dropdown" />
                        <span class="input-group-addon clickable" title="{{_t('lb_add_tag')}}" ng-click="addTag(searchText)">
@@ -106,14 +141,16 @@
                        </span> 
                        <div class="app-dropdown app-dropdown-left" ng-if="autoCompletePanel">
                         <ul>
-                           <li href="" ng-click="addTag(v)" ng-repeat="v in suggestions" ng-if="elementId.input.tags.indexOf(v) === -1"><a href=""> <i class="fa fa-plus text-success"></i> {{v}}</a></li>
+                           <li href="" ng-click="addTag(v)" 
+                               ng-repeat="v in suggestions | orderBy:'toString()'" 
+                               ng-if="elementId.input.tags.indexOf(v) === -1"><a href=""> <i class="fa fa-plus text-success"></i> {{v}}</a></li>
                         </ul>
                         </div>
                     </div>
                  </div>
                 <div class="form-group last">
                     <a href="" class="btn btn-default btn-tag" id="tag_{{$index}}"
-                            ng-repeat="t in elementId.input.tags"
+                            ng-repeat="t in elementId.input.tags | orderBy:'toString()'"
                            ng-click="removeTag($index)">{{t}} <i class="fa fa-times text-danger" title="{{_t('lb_remove')}}"></i></a>
                 </div>
             </fieldset>

@@ -64,7 +64,7 @@ myApp.config(['$routeProvider', function ($routeProvider) {
                     redirectTo: '/dashboard'
                 }).
                 // Elements Dashboard
-                when('/dashboard', {
+                when('/dashboard/:firstlogin?', {
                     templateUrl: 'app/views/elements/elements_dashboard.html',
                     requireLogin: true
                 }).
@@ -401,10 +401,12 @@ myApp.config(function ($provide, $httpProvider, cfg) {
 
                 } else if (rejection.status == 403) {
                     dataService.logError(rejection);
+                    
                     angular.extend(cfg.route.fatalError, {
                         message: cfg.route.t['error_403'],
                         hide: true
                     });
+                    console.log(cfg.route.fatalError)
 
                     return $q.reject(rejection);
                 } else {

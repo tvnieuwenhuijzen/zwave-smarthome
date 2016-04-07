@@ -7,7 +7,8 @@
         </div>
         <div class="appmodal-body">
             <bb-alert alert="widgetSensorMultiline.alert"></bb-alert>
-            <div class="multiline-entry" ng-if="widgetSensorMultiline.find">
+            <div class="multiline-entry" ng-if="widgetSensorMultiline.find.metrics.sensors">
+                
                 <table class="table table-report table-condensed">
                     <tbody>
                         <!-- <tr class="text-right" ng-if="multiLineDev.data.metrics.multilineType == 'protection'">
@@ -25,7 +26,7 @@
                             <td>
                                 <strong>{{n.metrics.level | numberFixedLen}} {{n.metrics.scaleTitle}}</strong>
                             </td>
-                            <td class="text-right">
+                            <td class="text-right tbl-widget-ctrl">
                                 <a class="widget-history" href="" ng-click="getDeviceById(n.id);handleModal('modalHistory', $event)" ng-if="n.hasHistory"><i class="fa fa-history"></i></a>&nbsp;
                                 <button class="btn btn-default" ng-click="runCmd(n.id + '/command/update')" ng-if="cfg.element_update_time_btn.indexOf(n.deviceType) > - 1 && n.updateTime"> <i class="fa fa-clock-o"></i> <span class="widget-update-time">{{n.updateTime|isToday:true:_t('lb_days'):_t('lb_yesterday')}}</span></button>
                             </td>
