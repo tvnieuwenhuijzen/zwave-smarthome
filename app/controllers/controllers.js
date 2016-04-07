@@ -28,19 +28,84 @@ myAppFactory.factory('ioc', function (dataFactory) {
     ioc.locations.set = function () {
         dataFactory.getApi('locations').then(function (response) {
             ioc.locations.all.push(response.data.data);
-            
+
         }, function (error) {
         });
         //ioc.locations.all.push(locations);
     };
     return ioc;
 });
-myAppController.controller('TestController', function ($scope, $interval, dataFactory, ioc, cfg) {
+myAppController.controller('TestController', function ($scope,  $location,$window, dataFactory, ioc, cfg) {
+    $scope.input = {
+        name: '',
+        email: ''
+    };
+    
+    $scope.$on('$locationChangeStart', function (event) {
+        event.preventDefault();
+        console.log($scope.form_profile.$dirty);
+        return;
+      var path = $location.path();
+      if ($rootScope.formDirty) {
+        SweetAlert.swal({
+          title: 'Still Editing',
+          text: 'You have unsaved changes. Are you sure you want to leave?',
+          type: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#F8BB86',
+          confirmButtonText: 'Yes'
+        }, function (isConfirm) {
+          if (isConfirm) {
+            $rootScope.formDirty = false;
+            $location.path(path);
+          }
+        });
+        event.preventDefault();
+      }
+    });
+
+
+
+//    $scope.$on('$stateChangeStart', function () {
+//       alertify.confirm('Are you sure you want to leave this page without to saving form data?', function () {
+//            
+//        });
+//       
+//    });
+
+//    $scope.$on('$locationChangeStart', function (event, next, current) {
+//        console.log(next)
+//        event.preventDefault();
+//         alertify.confirm('Are you sure you want to leave this page without to saving form data?')
+//                                .set('onok', function (closeEvent) {//after clicking OK
+//                                    //window.location.href = next;
+//                                     //$location.path(next);
+//                                      window.location = next;
+//        $window.location.reload();
+//                                })
+//                                .set('oncancel', function (closeEvent) {//after clicking Cancel
+//                                     event.preventDefault();
+//                                });
+//       
+//         //alertify.confirm('Are you sure you want to leave this page without to saving form data?', function () {
+//            
+//       // });
+//        //if (check(next + current)) {
+////            var answer = confirm('Are you sure you want to navigate away from this page');
+////            if (!answer) {
+////                event.preventDefault();
+////            }
+//       // }
+//    });
+
+    $scope.submitForm = function () {
+        console.log($scope.input)
+    };
     var self = this;
     self.setLocations = function (locations) {
         ioc.locations.set(locations);
     };
-     ioc.locations.set();
+    ioc.locations.set();
 
 
     /**

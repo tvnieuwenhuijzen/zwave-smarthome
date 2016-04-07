@@ -1,9 +1,25 @@
 <!-- Test view -->
 <div ng-controller="TestController">
-    <h1>{{_t('nav_about')}}</h1>
-    <p>This User Interfaces allows to operate a Smart Home Network based on Z-Wave devices. It utilizes the software architecture "Z_Way", certified as Z-Wave Plus Controller under the Certification number ZC10-14110009. </p>
-    <p><em>All rights reserved by Z-Wave Me, c/o Alsenet S.A. Switzerland</em></p>
-    <div ng-controller="Test2Controller">
+    <form name="form_test" id="form_profile" class="form form-page" ng-submit="submitForm()" novalidate>
+         <fieldset>
+                <div class="form-group form-inline">
+                    <!-- name -->
+                     <label class="isrequired display-block">{{_t('lb_name')}}: </label>
+                    <input name="name" id="name" type="text" class="form-control" value="{{input.name}}" ng-model="input.name" />
+                </div>
+                <div class="form-group form-inline">
+                    <!-- email -->
+                 <label class="display-block">{{_t('lb_email')}}: </label>
+                 <input name="email" id="email" type="email" class="form-control" value="{{input.email}}" ng-model="input.email" />
+                 </div>
+            </fieldset>
+        <fieldset class="submit-entry">
+            <button type="button" class="btn btn-default" bb-go-back><i class="fa fa-reply"></i> <span class="btn-name">{{_t('lb_cancel')}}</span></button>
+            <button type="submit" class="btn btn-submit"><i class="fa fa-check"></i> <span class="btn-name">{{_t('lb_save')}}</span></button>
+        </fieldset>
+
+    </form>
+    <!--<div ng-controller="Test2Controller">
         <pre>{{locations|json}}</pre>
-    </div>
+    </div>-->
 </div>
