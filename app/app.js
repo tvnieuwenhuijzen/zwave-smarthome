@@ -324,6 +324,11 @@ myApp.config(['$routeProvider', function ($routeProvider) {
                     templateUrl: 'app/views/test.html',
                     requireLogin: true
                 }).
+                //Drag and Drop
+                when('/drag', {
+                    templateUrl: 'app/views/drag.html',
+                    requireLogin: true
+                }).
                 otherwise({
                     templateUrl: 'app/views/error.html',
                     controller: '404Controller'

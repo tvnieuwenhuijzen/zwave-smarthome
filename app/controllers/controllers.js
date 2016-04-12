@@ -35,34 +35,64 @@ myAppFactory.factory('ioc', function (dataFactory) {
     };
     return ioc;
 });
+
+
+myAppController.controller('DragController', function ($scope, $interval, ioc, cfg) {
+  $scope.names = [{val:'bob'},{val:'lucy'},{val:'john'},{val:'luke'},{val:'han'}];
+			$scope.tempplayer = '';
+			$scope.updateNames = function (){
+				if($scope.tempplayer === "") return
+				$scope.names.push({val: $scope.tempplayer});
+				$scope.tempplayer = "";
+			};
+			$scope.checkForNameDelete = function($index){
+				if($scope.names[$index].val === ''){
+					$scope.names.splice($index, 1);
+				}
+			};
+			
+			$scope.$on('ngrr-dragstart', function(){
+				console.log('Drag Start');
+			});
+			
+			$scope.$on('ngrr-dragend', function(){
+				console.log('Drag End');
+			});
+			
+			$scope.$on('ngrr-reordered', function(){
+				console.log('Reordered');
+			});
+
+
+});
 myAppController.controller('TestController', function ($scope,  $location,$window, dataFactory, ioc, cfg) {
     $scope.input = {
         name: '',
         email: ''
     };
     
-    $scope.$on('$locationChangeStart', function (event) {
-        event.preventDefault();
-        console.log($scope.form_profile.$dirty);
-        return;
-      var path = $location.path();
-      if ($rootScope.formDirty) {
-        SweetAlert.swal({
-          title: 'Still Editing',
-          text: 'You have unsaved changes. Are you sure you want to leave?',
-          type: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#F8BB86',
-          confirmButtonText: 'Yes'
-        }, function (isConfirm) {
-          if (isConfirm) {
-            $rootScope.formDirty = false;
-            $location.path(path);
-          }
-        });
-        event.preventDefault();
-      }
-    });
+//    $scope.$on('$locationChangeStart', function (event) {
+//        event.preventDefault();
+//        console.log($scope.form_profile.$dirty);
+//        return;
+//      var path = $location.path();
+//      if ($rootScope.formDirty) {
+//        SweetAlert.swal({
+//          title: 'Still Editing',
+//          text: 'You have unsaved changes. Are you sure you want to leave?',
+//          type: 'warning',
+//          showCancelButton: true,
+//          confirmButtonColor: '#F8BB86',
+//          confirmButtonText: 'Yes'
+//        }, function (isConfirm) {
+////          if (isConfirm) {
+////            $rootScope.formDirty = false;
+////            $location.path(path);
+////          }
+//        });
+//        event.preventDefault();
+//      }
+//    });
 
 
 
@@ -98,14 +128,14 @@ myAppController.controller('TestController', function ($scope,  $location,$windo
 //       // }
 //    });
 
-    $scope.submitForm = function () {
-        console.log($scope.input)
-    };
-    var self = this;
-    self.setLocations = function (locations) {
-        ioc.locations.set(locations);
-    };
-    ioc.locations.set();
+//    $scope.submitForm = function () {
+//        console.log($scope.input)
+//    };
+//    var self = this;
+//    self.setLocations = function (locations) {
+//        ioc.locations.set(locations);
+//    };
+//    ioc.locations.set();
 
 
     /**
@@ -119,10 +149,10 @@ myAppController.controller('TestController', function ($scope,  $location,$windo
 //    };
 //    $scope.loadData();
 
-    console.log(ioc.locations.all)
-    var refresh = function () {
-        $scope.loadData();
-    };
+    //console.log(ioc.locations.all)
+//    var refresh = function () {
+//        $scope.loadData();
+//    };
     //var apiDataInterval = $interval(refresh, 1000);
 
 
