@@ -95,9 +95,10 @@ myAppController.controller('ManagementController', function ($scope, $interval, 
 /**
  * List of users
  */
-myAppController.controller('ManagementUserController', function ($scope, dataFactory, dataService, myCache) {
+myAppController.controller('ManagementUserController', function ($scope,$cookies,dataFactory, dataService, myCache) {
     $scope.userProfiles = {
-        all: false
+        all: false,
+        orderBy: ($cookies.usersOrderBy ? $cookies.usersOrderBy : 'titleASC')
     };
     /**
      * Load profiles
@@ -113,6 +114,15 @@ myAppController.controller('ManagementUserController', function ($scope, dataFac
         });
     };
     $scope.loadProfiles();
+    
+    /**
+     * Set order by
+     */
+    $scope.setOrderBy = function (key) {
+        angular.extend($scope.userProfiles, {orderBy: key});
+        $cookies.usersOrderBy = key;
+        $scope.loadProfiles();
+    };
 
     /**
      * Delete an user
@@ -468,7 +478,7 @@ myAppController.controller('ManagementFirmwareController', function ($scope, $sc
 /**
  * Restor controller
  */
-myAppController.controller('ManagementRestoreController', function ($scope, dataFactory, dataService) {
+myAppController.controller('ManagementRestoreController', function ($scope, $window,$timeout,dataFactory, dataService) {
     $scope.myFile = null;
     $scope.managementRestore = {
         confirm: false,
@@ -491,6 +501,10 @@ myAppController.controller('ManagementRestoreController', function ($scope, data
             $scope.loading = false;
             dataService.showNotifier({message: $scope._t('restore_done_reload_ui')});
             $scope.managementRestore.alert = {message: $scope._t('restore_done_reload_ui'), status: 'alert-success', icon: 'fa-check'};
+             $timeout(function () {
+                 alertify.dismissAll();
+                $window.location.reload();
+            }, 2000);
         }, function (error) {
             $scope.loading = false;
             alertify.alertError($scope._t('restore_backup_failed'));
