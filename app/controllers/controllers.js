@@ -43,8 +43,11 @@ myAppController.controller('DragController', function ($scope, dataFactory, cfg)
     $scope.sortCfg = {
         group: 'elements',
         animation: 150,
+        delay: 0,
         draggable: ".element",
-        handle: ".my-handle",
+        //handle: ".my-handle",
+        ghostClass: "sortable-ghost",
+        chosenClass: "sortable-chosen",
         // dragging ended
         onEnd: function (e) {
             updatePosition(e.models)
@@ -62,9 +65,14 @@ myAppController.controller('DragController', function ($scope, dataFactory, cfg)
     $scope.getDevices();
 
     function updatePosition(data) {
-        console.log(data);
         angular.forEach(data, function (v, k) {
-            console.log('Device id %s has position: %s',v.id,k)
+            console.log('Device id %s has position: %s', v.id, k)
+            dataFactory.putApi('devices', v.id, {id: v.id, position: k}).then(function (response) {
+
+            }, function (error) {
+                alertify.alertError($scope._t('error_update_data'));
+            });
+
         });
     }
 });

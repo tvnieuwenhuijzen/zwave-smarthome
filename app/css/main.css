@@ -3144,6 +3144,18 @@ http://codepen.io/MattIn4D/pen/LiKFC
   border-color: #d3d3d3;
 }
 
+/* Sortable
+-------------------------------------------------- */
+/* line 3, ../sass/common/_sortable.scss */
+.sortable-ghost {
+  opacity: 0.5;
+}
+
+/* line 6, ../sass/common/_sortable.scss */
+.sortable-chosen {
+  background-color: green;
+}
+
 /* Elements
 -------------------------------------------------- */
 /* line 4, ../sass/modules/_elements.scss */
