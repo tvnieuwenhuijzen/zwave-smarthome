@@ -37,40 +37,43 @@ myAppFactory.factory('ioc', function (dataFactory) {
 });
 
 
-myAppController.controller('DragController', function ($scope, $interval, ioc, cfg) {
-  $scope.names = [{val:'bob'},{val:'lucy'},{val:'john'},{val:'luke'},{val:'han'}];
-			$scope.tempplayer = '';
-			$scope.updateNames = function (){
-				if($scope.tempplayer === "") return
-				$scope.names.push({val: $scope.tempplayer});
-				$scope.tempplayer = "";
-			};
-			$scope.checkForNameDelete = function($index){
-				if($scope.names[$index].val === ''){
-					$scope.names.splice($index, 1);
-				}
-			};
-			
-			$scope.$on('ngrr-dragstart', function(){
-				console.log('Drag Start');
-			});
-			
-			$scope.$on('ngrr-dragend', function(){
-				console.log('Drag End');
-			});
-			
-			$scope.$on('ngrr-reordered', function(){
-				console.log('Reordered');
-			});
+myAppController.controller('DragController', function ($scope, dataFactory, cfg) {
 
+    $scope.devices = {};
+    $scope.sortCfg = {
+        group: 'elements',
+        animation: 150,
+        draggable: ".element",
+        handle: ".my-handle",
+        // dragging ended
+        onEnd: function (e) {
+            updatePosition(e.models)
+        }
+    };
 
+    /**
+     * Get devices
+     */
+    $scope.getDevices = function () {
+        dataFactory.getApi('devices', null, true).then(function (response) {
+            $scope.devices = response.data.data.devices;
+        }, function (error) {});
+    };
+    $scope.getDevices();
+
+    function updatePosition(data) {
+        console.log(data);
+        angular.forEach(data, function (v, k) {
+            console.log('Device id %s has position: %s',v.id,k)
+        });
+    }
 });
-myAppController.controller('TestController', function ($scope,  $location,$window, dataFactory, ioc, cfg) {
+myAppController.controller('TestController', function ($scope, $location, $window, dataFactory, ioc, cfg) {
     $scope.input = {
         name: '',
         email: ''
     };
-    
+
 //    $scope.$on('$locationChangeStart', function (event) {
 //        event.preventDefault();
 //        console.log($scope.form_profile.$dirty);

@@ -13,7 +13,8 @@ var myApp = angular.module('myApp', [
     'myAppService',
     'dndLists',
     'qAllSettled',
-    'myAppTemplates'
+    'myAppTemplates',
+    'ng-sortable'
 
 ]);
 
