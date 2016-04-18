@@ -14,7 +14,8 @@ var myApp = angular.module('myApp', [
     'dndLists',
     'qAllSettled',
     'myAppTemplates',
-    'ng-sortable'
+    'ng-sortable',
+    'ngTouch'
 
 ]);
 
@@ -328,6 +329,11 @@ myApp.config(['$routeProvider', function ($routeProvider) {
                 //Drag and Drop
                 when('/drag', {
                     templateUrl: 'app/views/drag.html',
+                    requireLogin: true
+                }).
+                 //Touch
+                when('/touch', {
+                    templateUrl: 'app/views/touch.html',
                     requireLogin: true
                 }).
                 otherwise({

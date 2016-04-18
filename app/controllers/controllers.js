@@ -76,6 +76,12 @@ myAppController.controller('DragController', function ($scope, dataFactory, cfg)
         });
     }
 });
+
+myAppController.controller('TouchController', function ($scope, $interval, ioc, cfg) {
+    $scope.touch = {
+        cnt: 1
+    };
+});
 myAppController.controller('TestController', function ($scope, $location, $window, dataFactory, ioc, cfg) {
     $scope.input = {
         name: '',
