@@ -37,6 +37,63 @@ myAppController.controller('BaseController', function ($scope, $cookies, $filter
      
      $scope.setSkin();*/
 
+    $scope.route = function (routeName, params) {
+        var route = null;
+        angular.forEach($route.routes, function (v, k) {
+            //console.log(k)
+            if (v.name === routeName) {
+                console.log('Route name: ', routeName)
+                route = setRoute(k.replace(/^\/|\/$/g, ''), params);
+            }
+        });
+
+        function setRoute(route, params) {
+            // An array with replacement
+            var mapObj = {
+                ':': '',
+                '?': ''
+            };
+            // Route params
+            params = params || {};
+            // An array from the route
+            var parts = route.split('/');
+            // Array with segments
+            var array = [];
+           
+            angular.forEach(parts, function (v) {
+                // Removing : and ? from the segment
+                var segment = v.replace(/\:|\?/gi, function (matched) {
+                    return mapObj[matched];
+                });
+                // Route param
+                var param =  params[segment] || params[segment] === 0 ? params[segment].toString() : null;
+                // Has a parameter
+                if (v.charAt(0) === ':') {
+                    // Parameter is required
+                    if (v.charAt(v.length - 1) !== '?' && !param) {
+                        throw Error('Attribute \'' + segment + '\' was not given for route \'' + route + '\'');
+                    } else {
+                        v = params[segment]||'0';
+                    }
+                }
+                if (v) {
+                    array.push(v)
+                }
+
+
+
+            });
+            return array.join('/');
+        }
+        console.log('Route path: ', route);
+        if (!route) {
+                        throw Error('Route name \'' + routeName + '\' not found');
+                    }
+        return route;
+    };
+
+    $scope.route('element_id', {id: 0});
+
 
     /**
      * Check if route match the pattern.
@@ -82,7 +139,7 @@ myAppController.controller('BaseController', function ($scope, $cookies, $filter
                         };
                         if ($scope.routeMatch('/boxupdate')) {
                             fatalArray.message = $scope._t('jamesbox_connection_refused');
-                            fatalArray.info = $scope._t('jamesbox_connection_refused_info',{__reload_begintag__:'<div>', __reload_endtag__:'</div>', __attention_begintag__:'<div class="alert alert-warning"><i class="fa fa-exclamation-circle"></i>', __attention_endtag__:'<div>'});
+                            fatalArray.info = $scope._t('jamesbox_connection_refused_info', {__reload_begintag__: '<div>', __reload_endtag__: '</div>', __attention_begintag__: '<div class="alert alert-warning"><i class="fa fa-exclamation-circle"></i>', __attention_endtag__: '<div>'});
                             fatalArray.icon = cfg.route.fatalError.icon_jamesbox;
                         }
                         angular.extend(cfg.route.fatalError, fatalArray);
@@ -176,7 +233,7 @@ myAppController.controller('BaseController', function ($scope, $cookies, $filter
     $scope.$watch('lang', function () {
         $scope.loadLang($scope.lang);
     });
-    
+
     // IF IE or Edge displays an message
     if (dataService.isIeEdge()) {
         angular.extend(cfg.route.fatalError, {

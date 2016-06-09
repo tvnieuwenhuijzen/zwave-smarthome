@@ -64,10 +64,12 @@ myApp.config(['$routeProvider', function ($routeProvider) {
                 }).
                 // Home
                 when('/home', {
+                    name: 'home',
                     redirectTo: '/dashboard'
                 }).
                 // Elements Dashboard
                 when('/dashboard/:firstlogin?', {
+                     name: 'dashboard',
                     templateUrl: 'app/views/elements/elements_dashboard.html',
                     requireLogin: true
                 }).
@@ -78,6 +80,7 @@ myApp.config(['$routeProvider', function ($routeProvider) {
                 }).
                 // Element id
                 when('/element/:id', {
+                     name: 'element_id',
                     templateUrl: 'app/views/elements/element_id.html',
                     requireLogin: true,
                     roles: cfg.role_access.element
