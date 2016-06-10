@@ -37,64 +37,6 @@ myAppController.controller('BaseController', function ($scope, $cookies, $filter
      
      $scope.setSkin();*/
 
-    $scope.route = function (routeName, params) {
-        var route = null;
-        angular.forEach($route.routes, function (v, k) {
-            //console.log(k)
-            if (v.name === routeName) {
-                console.log('Route name: ', routeName)
-                route = setRoute(k.replace(/^\/|\/$/g, ''), params);
-            }
-        });
-
-        function setRoute(route, params) {
-            // An array with replacement
-            var mapObj = {
-                ':': '',
-                '?': ''
-            };
-            // Route params
-            params = params || {};
-            // An array from the route
-            var parts = route.split('/');
-            // Array with segments
-            var array = [];
-           
-            angular.forEach(parts, function (v) {
-                // Removing : and ? from the segment
-                var segment = v.replace(/\:|\?/gi, function (matched) {
-                    return mapObj[matched];
-                });
-                // Route param
-                var param =  params[segment] || params[segment] === 0 ? params[segment].toString() : null;
-                // Has a parameter
-                if (v.charAt(0) === ':') {
-                    // Parameter is required
-                    if (v.charAt(v.length - 1) !== '?' && !param) {
-                        throw Error('Attribute \'' + segment + '\' was not given for route \'' + route + '\'');
-                    } else {
-                        v = params[segment];
-                    }
-                }
-                if (v) {
-                    array.push(v);
-                }
-
-
-
-            });
-            return array.join('/');
-        }
-        console.log('Route path: ', route);
-        if (!route) {
-                        throw Error('Route name \'' + routeName + '\' not found');
-                    }
-        return route;
-    };
-
-    $scope.route('room', {id: 0});
-
-
     /**
      * Check if route match the pattern.
      * @param {string} path
