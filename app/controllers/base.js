@@ -73,11 +73,11 @@ myAppController.controller('BaseController', function ($scope, $cookies, $filter
                     if (v.charAt(v.length - 1) !== '?' && !param) {
                         throw Error('Attribute \'' + segment + '\' was not given for route \'' + route + '\'');
                     } else {
-                        v = params[segment]||'0';
+                        v = params[segment];
                     }
                 }
                 if (v) {
-                    array.push(v)
+                    array.push(v);
                 }
 
 
@@ -92,7 +92,7 @@ myAppController.controller('BaseController', function ($scope, $cookies, $filter
         return route;
     };
 
-    $scope.route('element_id', {id: 0});
+    $scope.route('room', {id: 0});
 
 
     /**

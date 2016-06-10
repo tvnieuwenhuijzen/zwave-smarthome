@@ -80,7 +80,7 @@ myApp.config(['$routeProvider', function ($routeProvider) {
                 }).
                 // Element id
                 when('/element/:id', {
-                     name: 'element_id',
+                     name: 'element',
                     templateUrl: 'app/views/elements/element_id.html',
                     requireLogin: true,
                     roles: cfg.role_access.element
@@ -93,6 +93,7 @@ myApp.config(['$routeProvider', function ($routeProvider) {
                 }).
                 // Elements rooms
                 when('/rooms/:id', {
+                    name: 'room',
                     templateUrl: 'app/views/elements/elements_room.html',
                     requireLogin: true
                 }).
@@ -330,7 +331,7 @@ myApp.config(['$routeProvider', function ($routeProvider) {
                     requireLogin: true
                 }).
                 otherwise({
-                    templateUrl: 'app/views/error.html',
+                    templateUrl: 'app/views/404.html',
                     controller: '404Controller'
                 });
     }]);
