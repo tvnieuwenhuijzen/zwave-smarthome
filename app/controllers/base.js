@@ -37,6 +37,7 @@ myAppController.controller('BaseController', function ($scope, $cookies, $filter
      
      $scope.setSkin();*/
 
+
     /**
      * Check if route match the pattern.
      * @param {string} path
@@ -81,7 +82,7 @@ myAppController.controller('BaseController', function ($scope, $cookies, $filter
                         };
                         if ($scope.routeMatch('/boxupdate')) {
                             fatalArray.message = $scope._t('jamesbox_connection_refused');
-                            fatalArray.info = $scope._t('jamesbox_connection_refused_info', {__reload_begintag__: '<div>', __reload_endtag__: '</div>', __attention_begintag__: '<div class="alert alert-warning"><i class="fa fa-exclamation-circle"></i>', __attention_endtag__: '<div>'});
+                            fatalArray.info = $scope._t('jamesbox_connection_refused_info',{__reload_begintag__:'<div>', __reload_endtag__:'</div>', __attention_begintag__:'<div class="alert alert-warning"><i class="fa fa-exclamation-circle"></i>', __attention_endtag__:'<div>'});
                             fatalArray.icon = cfg.route.fatalError.icon_jamesbox;
                         }
                         angular.extend(cfg.route.fatalError, fatalArray);
@@ -175,7 +176,7 @@ myAppController.controller('BaseController', function ($scope, $cookies, $filter
     $scope.$watch('lang', function () {
         $scope.loadLang($scope.lang);
     });
-
+    
     // IF IE or Edge displays an message
     if (dataService.isIeEdge()) {
         angular.extend(cfg.route.fatalError, {
