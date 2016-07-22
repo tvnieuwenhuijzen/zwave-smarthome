@@ -110,11 +110,10 @@ myAppController.controller('ElementBaseController', function ($scope, $q, $inter
                         angular.extend($scope.dataHolder.devices.all[index],
                                 {metrics: v.metrics},
                                 {imgTrans: false},
-                                //{iconPath: $filter('getElementIcon')(v.metrics.icon, v, v.metrics.level)},
-                                 {iconPath: dataService.assignElementIcon(v)},
+                                {iconPath: dataService.assignElementIcon(v)},
                                 {updateTime: v.updateTime}
                         );
-                        console.log('Updating from server response: device ID: ' + v.id + ', metrics.level: ' + v.metrics.level + ', updateTime: ' + v.updateTime + ', iconPath: ' + $filter('getElementIcon')(v.metrics.icon, v, v.metrics.level))
+                        //console.log('Updating from server response: device ID: ' + v.id + ', metrics.level: ' + v.metrics.level + ', updateTime: ' + v.updateTime);
                     });
                 }
                 if (response.data.data.structureChanged === true) {
@@ -254,11 +253,12 @@ myAppController.controller('ElementBaseController', function ($scope, $q, $inter
 
         var cmd = v.id + '/command/exact?level=' + count;
         v.metrics.level = count;
-        if (run) {
+         //console.log('ElementBaseController.setExactCmd - Sending request: ', cmd)
+        //if (run) {
             $scope.runCmd(cmd);
-        }
+       // }
 
-        return cmd;
+        //return cmd;
     };
 
     /// --- Private functions --- ///
@@ -530,7 +530,7 @@ myAppController.controller('ElementSensorMultilineController', function ($scope,
                 $scope.widgetSensorMultiline.alert = {message: $scope._t('no_data'), status: 'alert-warning', icon: 'fa-exclamation-circle'};
                 return;
             }
-
+           $scope.widgetSensorMultiline.find.metrics.sensors = dataService.getDevicesData(response.data.data.metrics.sensors).value();
         }, function (error) {
             $scope.widgetSensorMultiline.alert = {message: $scope._t('error_load_data'), status: 'alert-danger', icon: 'fa-exclamation-triangle'};
         });
@@ -974,7 +974,7 @@ myAppController.controller('ElementIconController', function ($scope, $timeout, 
         $scope.icons.all = dataService.getSingleElementIcons($scope.elementId.input);
 
     };
-    $scope.loadCfgIcons();
+    //$scope.loadCfgIcons();
 
     /**
      * Load already uploaded icons
@@ -990,7 +990,7 @@ myAppController.controller('ElementIconController', function ($scope, $timeout, 
         });
 
     };
-    $scope.loadUploadedIcons();
+    //$scope.loadUploadedIcons();
     /**
      * Set selected icon
      * @param {string} icon
