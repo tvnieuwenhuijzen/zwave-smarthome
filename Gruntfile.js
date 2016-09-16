@@ -57,7 +57,9 @@ module.exports = function (grunt) {
                     'vendor/chartjs/Chart.js',
                     'vendor/knob/jquery.knob.js',
                     'vendor/handlebars/handlebars-v3.0.3.min.js',
-                    'vendor/alpaca/1.5.14/bootstrap/alpaca.min.js',
+                    //'vendor/alpaca/1.5.14/bootstrap/alpaca.min.js',
+                    'vendor/alpaca/1.5.18/bootstrap/alpaca.min.js',
+                    //'vendor/alpaca/1.5.18/bootstrap/alpaca.js',
                     'vendor/alertify/alertify.min.js',
                     // Angular
                     'vendor/angular/angular-1.2.28/angular.min.js',
@@ -68,6 +70,7 @@ module.exports = function (grunt) {
                     // Bootstrap
                     'vendor/bootstrap/bootstrap.min.js',
                     'vendor/bootstrap/plugins/bootstrap-datetimepicker.js',
+                    'vendor/bootstrap/plugins/bootstrap-multiselect.js',
                     // APP
                     'app/icons.js',
                     'app/app.js',
